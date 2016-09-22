@@ -179,3 +179,6 @@ ENV/
 # Rope project settings
 .ropeproject
 
+debug
+data
+

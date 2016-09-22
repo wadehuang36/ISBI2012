@@ -26,12 +26,13 @@ DEBUG = False
 TRAIN_IMAGES = "./data/train-volume.tif"
 TRAIN_LABELS = "./data/train-labels.tif"
 
-TRAIN_DB = "./data/train_leveldb"
-TEST_DB = "./data/test_leveldb"
+TILE_SIZE = 65
+TRAIN_DB = "./data/train_" + str(TILE_SIZE)
+TEST_DB = "./data/test_" + str(TILE_SIZE)
 
 TRAIN_RANGE = range(0, 25)
 TEST_RANGE = range(25, 30)
-TILE_SIZE = 65
+
 EDGE_SIZE = int((TILE_SIZE - 1) / 2)
 
 
@@ -125,8 +126,10 @@ def pixelToDB(dbFile, images, mirroredImages, labels):
                 datum = caffe.io.array_to_datum(image, label)
                 lmdb_txn.put(str(id), datum.SerializeToString())
 
-                if DEBUG and i % 10000 == 0:
-                    Image.fromarray(image[0, ...]).save("./debug/tile_%s.jpeg" % i)
+                if i % 10000 == 0:
+                    print("\tConverting #%s" % str(i))
+                    if DEBUG:
+                        Image.fromarray(image[0, ...]).save("./debug/tile_%s.jpeg" % i)
 
         lmdb_txn.commit()
 
@@ -145,14 +148,19 @@ def convert():
     testLabel = labels[TEST_RANGE, ...]
     mirroredTestImages = mirroredImages[TEST_RANGE, ...]
 
+    print("Start Convert Train Set.")
     pixelToDB(TRAIN_DB, trainImages, mirroredTrainImages, trainLabel)
+    print("Start Convert Test Set.")
     pixelToDB(TEST_DB, testImages, mirroredTestImages, testLabel)
 
 
 if __name__ == "__main__":
+
     if "--debug" in sys.argv:
         DEBUG = True
         if not os.path.exists("./debug"):
             os.mkdir("./debug")
+
+    print("Start Convert. In Debug Mode: %s" % str(DEBUG))
 
     convert()

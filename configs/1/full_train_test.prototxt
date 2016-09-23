@@ -1,5 +1,6 @@
+name: "full_train_test"
 layer {
-  name: "train"
+  name: "isbi2012"
   type: "Data"
   top: "data"
   top: "label"
@@ -7,7 +8,7 @@ layer {
     phase: TRAIN
   }
   transform_param {
-    scale: 0.00390625 # 1 / 256
+    scale: 0.00390625
   }
   data_param {
     source: "data/train_65"
@@ -16,7 +17,7 @@ layer {
   }
 }
 layer {
-  name: "test"
+  name: "isbi2012"
   type: "Data"
   top: "data"
   top: "label"
@@ -37,12 +38,23 @@ layer {
   type: "Convolution"
   bottom: "data"
   top: "conv1"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
   convolution_param {
     num_output: 48
+    pad: 2
     kernel_size: 5
+    stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.01
+      std: 0.0001
+    }
+    bias_filler {
+      type: "constant"
     }
   }
 }
@@ -80,12 +92,23 @@ layer {
   type: "Convolution"
   bottom: "norm1"
   top: "conv2"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
   convolution_param {
     num_output: 48
+    pad: 2
     kernel_size: 5
+    stride: 1
     weight_filler {
       type: "gaussian"
       std: 0.01
+    }
+    bias_filler {
+      type: "constant"
     }
   }
 }
@@ -101,13 +124,13 @@ layer {
   bottom: "conv2"
   top: "pool2"
   pooling_param {
-    pool: MAX
+    pool: AVE
     kernel_size: 2
     stride: 2
   }
 }
 layer {
-  name: "norm0"
+  name: "norm2"
   type: "LRN"
   bottom: "pool2"
   top: "norm2"
@@ -121,14 +144,19 @@ layer {
 layer {
   name: "conv3"
   type: "Convolution"
-  bottom: "pool2"
-  top: "conv2"
+  bottom: "norm2"
+  top: "conv3"
   convolution_param {
     num_output: 48
+    pad: 2
     kernel_size: 5
+    stride: 1
     weight_filler {
       type: "gaussian"
       std: 0.01
+    }
+    bias_filler {
+      type: "constant"
     }
   }
 }
@@ -144,7 +172,7 @@ layer {
   bottom: "conv3"
   top: "pool3"
   pooling_param {
-    pool: MAX
+    pool: AVE
     kernel_size: 2
     stride: 2
   }
@@ -160,10 +188,10 @@ layer {
   }
   param {
     lr_mult: 2
-    decay_mult: 0
+    decay_mult: 1
   }
   inner_product_param {
-    num_output: 2
+    num_output: 200
     weight_filler {
       type: "gaussian"
       std: 0.01
@@ -180,9 +208,33 @@ layer {
   top: "ip1"
 }
 layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "ip1"
+  top: "ip2"
+  param {
+    lr_mult: 1
+    decay_mult: 250
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
   name: "accuracy"
   type: "Accuracy"
-  bottom: "ip1"
+  bottom: "ip2"
   bottom: "label"
   top: "accuracy"
   include {
@@ -192,7 +244,7 @@ layer {
 layer {
   name: "loss"
   type: "SoftmaxWithLoss"
-  bottom: "ip1"
+  bottom: "ip2"
   bottom: "label"
   top: "loss"
 }

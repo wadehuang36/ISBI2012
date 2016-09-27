@@ -35,9 +35,6 @@ TEST_DB = "./data/test_" + TILE_SIZE
 TRAIN_RANGE = range(0, 25)
 TEST_RANGE = range(25, 30)
 
-EDGE_SIZE = int((TILE_SIZE - 1) / 2)
-
-
 def loadImages(fileName):
     if not os.path.isfile(fileName):
         raise RuntimeError("% is missing." % fileName)

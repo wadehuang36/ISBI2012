@@ -10,7 +10,8 @@ TEST_LABELS = "./data/train-labels.tif"
 
 
 def apply(configFile, trainedModel):
-    classifier = caffe.Classifier(configFile, trainedModel)
+    classifier = caffe.Classifier(configFile,
+                                  trainedModel)
 
     convert = __import__("1_convert")
     images = convert.loadImages(TEST_IMAGES)
@@ -29,8 +30,7 @@ def apply(configFile, trainedModel):
                 i = ni * imageSize + hi * h + wi
                 image = mirroredImages[ni, hi:hi + TILE_SIZE, wi:wi + TILE_SIZE]
                 # data is K x H x W X C array, so add channel axis
-                image = image[np.newaxis, :, :, np.newaxis]
-                image = image * 0.00390625
+                image = image[np.newaxis, :, :, np.newaxis] * 0.00390625
                 result = classifier.predict(image, oversample=False)
                 results[i, ...] = result[0]
 
@@ -70,5 +70,5 @@ if __name__ == "__main__":
     #
     # print ("Start train with " + modelFile)
     configFile = "/home/wade/Projects/ISBI2012/configs/1/full_apply.prototxt"
-    trainedModel = "/home/wade/Projects/ISBI2012/snapshot/1/full_iter_524288.caffemodel.h5"
+    trainedModel = "/home/wade/Projects/ISBI2012/snapshot/1/full_iter_379.caffemodel.h5"
     apply(configFile, trainedModel)

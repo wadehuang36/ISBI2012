@@ -27,8 +27,8 @@ TRAIN_IMAGES = "./data/train-volume.tif"
 TRAIN_LABELS = "./data/train-labels.tif"
 
 TILE_SIZE = 65
-TRAIN_DB = "./data/train_" + str(TILE_SIZE)
-TEST_DB = "./data/test_" + str(TILE_SIZE)
+TRAIN_DB = "./data/train2_" + str(TILE_SIZE)
+TEST_DB = "./data/test2_" + str(TILE_SIZE)
 
 TRAIN_RANGE = range(0, 25)
 TEST_RANGE = range(25, 30)
@@ -109,7 +109,7 @@ def pixelToDB(dbFile, images, mirroredImages, labels):
     It needs 33 GB space, so directly write to DB
     """
 
-    lmdb_env = lmdb.open(dbFile)
+    lmdb_env = lmdb.open(dbFile, map_size=int(1e12))
 
     n, h, w = images.shape
     imageSize = h * w
@@ -124,7 +124,8 @@ def pixelToDB(dbFile, images, mirroredImages, labels):
                 image = image[np.newaxis, ...]
 
                 datum = caffe.io.array_to_datum(image, label)
-                lmdb_txn.put(str(id), datum.SerializeToString())
+                keystr = '{:0>8d}'.format(i)
+                lmdb_txn.put(keystr, datum.SerializeToString())
 
                 if i % 10000 == 0:
                     print("\tConverting #%s" % str(i))

@@ -3,25 +3,23 @@ layer {
   name: "data"
   type: "Input"
   top: "data"
-  transform_param {
-    scale: 0.00390625
-  }
   input_param { shape: { dim: 1 dim: 1 dim: 65 dim: 65 } }
 }
-layer {
+llayer {
   name: "conv1"
   type: "Convolution"
   bottom: "data"
   top: "conv1"
   param {
     lr_mult: 1
+    decay_mult: 1
   }
   param {
     lr_mult: 2
+    decay_mult: 1
   }
   convolution_param {
     num_output: 48
-    pad: 2
     kernel_size: 5
     stride: 1
     weight_filler {
@@ -47,7 +45,7 @@ layer {
   pooling_param {
     pool: MAX
     kernel_size: 2
-    stride: 2
+    stride: 1
   }
 }
 layer {
@@ -69,13 +67,14 @@ layer {
   top: "conv2"
   param {
     lr_mult: 1
+    decay_mult: 1
   }
   param {
     lr_mult: 2
+    decay_mult: 1
   }
   convolution_param {
     num_output: 48
-    pad: 2
     kernel_size: 5
     stride: 1
     weight_filler {
@@ -99,9 +98,9 @@ layer {
   bottom: "conv2"
   top: "pool2"
   pooling_param {
-    pool: AVE
+    pool: MAX
     kernel_size: 2
-    stride: 2
+    stride: 1
   }
 }
 layer {
@@ -121,9 +120,16 @@ layer {
   type: "Convolution"
   bottom: "norm2"
   top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
   convolution_param {
     num_output: 48
-    pad: 2
     kernel_size: 5
     stride: 1
     weight_filler {
@@ -147,9 +153,9 @@ layer {
   bottom: "conv3"
   top: "pool3"
   pooling_param {
-    pool: AVE
+    pool: MAX
     kernel_size: 2
-    stride: 2
+    stride: 1
   }
 }
 layer {
@@ -189,7 +195,7 @@ layer {
   top: "ip2"
   param {
     lr_mult: 1
-    decay_mult: 150
+    decay_mult: 250
   }
   param {
     lr_mult: 2

@@ -29,7 +29,7 @@ layer {
   }
   data_param {
     source: "data/test_65"
-    batch_size: 64
+    batch_size: 100
     backend: LMDB
   }
 }
@@ -40,13 +40,14 @@ layer {
   top: "conv1"
   param {
     lr_mult: 1
+    decay_mult: 1
   }
   param {
     lr_mult: 2
+    decay_mult: 1
   }
   convolution_param {
     num_output: 48
-    pad: 2
     kernel_size: 5
     stride: 1
     weight_filler {
@@ -72,7 +73,7 @@ layer {
   pooling_param {
     pool: MAX
     kernel_size: 2
-    stride: 2
+    stride: 1
   }
 }
 layer {
@@ -94,13 +95,14 @@ layer {
   top: "conv2"
   param {
     lr_mult: 1
+    decay_mult: 1
   }
   param {
     lr_mult: 2
+    decay_mult: 1
   }
   convolution_param {
     num_output: 48
-    pad: 2
     kernel_size: 5
     stride: 1
     weight_filler {
@@ -124,9 +126,9 @@ layer {
   bottom: "conv2"
   top: "pool2"
   pooling_param {
-    pool: AVE
+    pool: MAX
     kernel_size: 2
-    stride: 2
+    stride: 1
   }
 }
 layer {
@@ -146,9 +148,16 @@ layer {
   type: "Convolution"
   bottom: "norm2"
   top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
   convolution_param {
     num_output: 48
-    pad: 2
     kernel_size: 5
     stride: 1
     weight_filler {
@@ -172,9 +181,9 @@ layer {
   bottom: "conv3"
   top: "pool3"
   pooling_param {
-    pool: AVE
+    pool: MAX
     kernel_size: 2
-    stride: 2
+    stride: 1
   }
 }
 layer {

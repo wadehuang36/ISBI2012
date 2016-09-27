@@ -27,8 +27,10 @@ TRAIN_IMAGES = "./data/train-volume.tif"
 TRAIN_LABELS = "./data/train-labels.tif"
 
 TILE_SIZE = 65
-TRAIN_DB = "./data/train2_" + str(TILE_SIZE)
-TEST_DB = "./data/test2_" + str(TILE_SIZE)
+EDGE_SIZE = int((TILE_SIZE - 1) / 2)
+
+TRAIN_DB = "./data/train_" + TILE_SIZE
+TEST_DB = "./data/test_" + TILE_SIZE
 
 TRAIN_RANGE = range(0, 25)
 TEST_RANGE = range(25, 30)

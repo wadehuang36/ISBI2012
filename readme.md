@@ -27,3 +27,12 @@ the rule of finding model is ./models/{model}/config.json where {model} is the v
 4. segment.py, run segmentation with likelihood generated from task 3.
 
 All.py is just run all tasks together.
+
+## Acknowledge
+
+Adviser: Dr. Chao Chen
+ 
+## References
+
+1. https://github.com/mjpekala/bio-segmentation
+2. [Deep models for brain EM image segmentation: novel insights and improved performance.](https://www.ncbi.nlm.nih.gov/pubmed/27153603)

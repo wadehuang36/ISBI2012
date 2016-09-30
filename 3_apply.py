@@ -14,7 +14,7 @@ def apply(configFile, trainedModel):
     convert = __import__("1_convert")
     images = convert.loadImages(TEST_IMAGES)
     mirroredImages = convert.mirrorEdges(images)
-    results = np.zeros((images.size, 2))
+    probs = np.zeros((images.size, 2))
     n, h, w = images.shape
     imageSize = h * w
     for ni in range(0, 1):
@@ -24,13 +24,13 @@ def apply(configFile, trainedModel):
                 image = mirroredImages[ni, hi:hi + TILE_SIZE, wi:wi + TILE_SIZE]
                 # data is K x H x W X C array, so add channel axis
                 image = image[np.newaxis, :, :, np.newaxis]
-                result = classifier.predict(image)
-                results[i, ...] = result[0]
+                prob = classifier.predict(image)[0]
+                probs[i, ...] = prob
 
                 if i % 10000 == 0:
                     print("\tApply #%s" % str(i))
 
-    np.save("test.npy", results)
+    np.save("test.npy", probs)
 
 
 if __name__ == "__main__":

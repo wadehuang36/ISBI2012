@@ -1,0 +1,17 @@
+{
+  "subImageSize" : 65,
+  "trainImages" : "data/train-volume.tif",
+  "trainLabels" : "data/train-labels.tif",
+  "trainRange" : "range(0,26)",
+  "trainData" : "data/train_65",
+  "testImages" : "data/train-volume.tif",
+  "testLabels" : "data/train-labels.tif",
+  "testRange" : "range(26,30)",
+  "testData" : "data/test_65",
+  "deployImages" : "data/test-volume.tif",
+  "deployRange" : "range(0,2)",
+  "solver" : "models/1/full_solver.prototxt",
+  "modelPrototxt" : "models/1/full.prototxt",
+  "trainedModel" : "models/1/full_iter_6000000.caffemodel.h5",
+  "likelihood" : "models/1/likelihood.npy"
+}

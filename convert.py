@@ -16,24 +16,12 @@
 """
 
 import os
-import sys
 import caffe
 import numpy as np
 import lmdb
+import Config
 from PIL import Image
 
-DEBUG = False
-TRAIN_IMAGES = "./data/train-volume.tif"
-TRAIN_LABELS = "./data/train-labels.tif"
-
-TILE_SIZE = 65
-EDGE_SIZE = int((TILE_SIZE - 1) / 2)
-
-TRAIN_DB = "./data/train_" + str(TILE_SIZE)
-TEST_DB = "./data/test_" + str(TILE_SIZE)
-
-TRAIN_RANGE = range(0, 25)
-TEST_RANGE = range(25, 30)
 
 def loadImages(fileName):
     if not os.path.isfile(fileName):
@@ -70,39 +58,39 @@ def convertLabels(images):
     return labels
 
 
-def mirrorEdges(images):
+def mirrorEdges(subImageSize, images, debug):
     """
     Padding edges by mirror to mirror + 512 + mirror
     :param images:
     :return:
     """
     n, h, w = images.shape
-
-    copy = np.zeros((n, h + TILE_SIZE - 1, w + TILE_SIZE - 1), dtype=images.dtype)
+    edgeSize = int((subImageSize - 1) / 2)
+    copy = np.zeros((n, h + subImageSize - 1, w + subImageSize - 1), dtype=images.dtype)
     for ni in range(n):
         # inside is the same
-        copy[ni, EDGE_SIZE:h + EDGE_SIZE, EDGE_SIZE:w + EDGE_SIZE] = images[ni, ...]
+        copy[ni, edgeSize:h + edgeSize, edgeSize:w + edgeSize] = images[ni, ...]
 
         # left edge
-        copy[ni, :, 0:EDGE_SIZE] = np.fliplr(copy[ni, :, (EDGE_SIZE + 1):(2 * EDGE_SIZE + 1)])
+        copy[ni, :, 0:edgeSize] = np.fliplr(copy[ni, :, (edgeSize + 1):(2 * edgeSize + 1)])
 
         # right edge
-        copy[ni, :, -EDGE_SIZE:] = np.fliplr(copy[ni, :, (-2 * EDGE_SIZE - 1):(-EDGE_SIZE - 1)])
+        copy[ni, :, -edgeSize:] = np.fliplr(copy[ni, :, (-2 * edgeSize - 1):(-edgeSize - 1)])
 
         # top edge (fills in corners)
-        copy[ni, 0:EDGE_SIZE, :] = np.flipud(copy[ni, (EDGE_SIZE + 1):(2 * EDGE_SIZE + 1), :])
+        copy[ni, 0:edgeSize, :] = np.flipud(copy[ni, (edgeSize + 1):(2 * edgeSize + 1), :])
 
         # bottom edge (fills in corners)
-        copy[ni, -EDGE_SIZE:, :] = np.flipud(copy[ni, (-2 * EDGE_SIZE - 1):(-EDGE_SIZE - 1), :])
+        copy[ni, -edgeSize:, :] = np.flipud(copy[ni, (-2 * edgeSize - 1):(-edgeSize - 1), :])
 
-    if DEBUG:
+    if debug:
         Image.fromarray(images[0, ...]).save("./debug/1.jpeg")
         Image.fromarray(copy[0, ...]).save("./debug/mirrored_1.jpeg")
 
     return copy
 
 
-def pixelToDB(dbFile, images, mirroredImages, labels):
+def pixelToDB(dbFile, subImageSize, images, mirroredImages, labels, debug):
     """
     one pixel becomes one image
     It needs 33 GB space, so directly write to DB
@@ -118,7 +106,7 @@ def pixelToDB(dbFile, images, mirroredImages, labels):
             for wi in range(w):
                 i = ni * imageSize + hi * h + wi
                 label = labels[ni, hi, wi]
-                image = mirroredImages[ni, hi:hi + TILE_SIZE, wi:wi + TILE_SIZE]
+                image = mirroredImages[ni, hi:hi + subImageSize, wi:wi + subImageSize]
                 # data is C x H x W array, so add channel axis
                 image = image[np.newaxis, ...]
 
@@ -128,39 +116,34 @@ def pixelToDB(dbFile, images, mirroredImages, labels):
 
                 if i % 10000 == 0:
                     print("\tConverting #%s" % str(i))
-                    if DEBUG:
+                    if debug:
                         Image.fromarray(image[0, ...]).save("./debug/tile_%s.jpeg" % i)
 
         lmdb_txn.commit()
 
 
-def convert():
-    labels = convertLabels(loadImages(TRAIN_LABELS))
+def convert(config):
+    if os.path.exists(config.trainData):
+        print("%s exists, skip converting" % config.trainData)
+    else:
+        labels = convertLabels(loadImages(config.trainLabels))
 
-    images = loadImages(TRAIN_IMAGES)
-    mirroredImages = mirrorEdges(images)
+        images = loadImages(config.trainImages)
+        mirroredImages = mirrorEdges(config.subImageSize, images, config.debug)
 
-    trainImages = images[TRAIN_RANGE, ...]
-    trainLabel = labels[TRAIN_RANGE, ...]
-    mirroredTrainImages = mirroredImages[TRAIN_RANGE, ...]
+        trainImages = images[config.trainRange, ...]
+        trainLabel = labels[config.trainRange, ...]
+        mirroredTrainImages = mirroredImages[config.trainRange, ...]
 
-    testImages = images[TEST_RANGE, ...]
-    testLabel = labels[TEST_RANGE, ...]
-    mirroredTestImages = mirroredImages[TEST_RANGE, ...]
+        testImages = images[config.testRange, ...]
+        testLabel = labels[config.testRange, ...]
+        mirroredTestImages = mirroredImages[config.testRange, ...]
 
-    print("Start Convert Train Set.")
-    pixelToDB(TRAIN_DB, trainImages, mirroredTrainImages, trainLabel)
-    print("Start Convert Test Set.")
-    pixelToDB(TEST_DB, testImages, mirroredTestImages, testLabel)
+        print("Start Convert Train Set.")
+        pixelToDB(config.trainData, config.subImageSize, trainImages, mirroredTrainImages, trainLabel, config.debug)
+        print("Start Convert Test Set.")
+        pixelToDB(config.testData, config.subImageSize, testImages, mirroredTestImages, testLabel, config.debug)
 
 
 if __name__ == "__main__":
-
-    if "--debug" in sys.argv:
-        DEBUG = True
-        if not os.path.exists("./debug"):
-            os.mkdir("./debug")
-
-    print("Start Convert. In Debug Mode: %s" % str(DEBUG))
-
-    convert()
+    convert(Config.load())

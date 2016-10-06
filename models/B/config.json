@@ -10,8 +10,8 @@
   "testData" : "data/test_65",
   "deployImages" : "data/test-volume.tif",
   "deployRange" : "range(0,1)",
-  "solver" : "models/1/solver.prototxt",
-  "modelPrototxt" : "models/1/deploy.prototxt",
-  "trainedModel" : "models/1/results/1_iter_6000000.caffemodel.h5",
-  "likelihood" : "models/1/likelihood.npy"
+  "solver" : "models/B/solver.prototxt",
+  "modelPrototxt" : "models/B/deploy.prototxt",
+  "trainedModel" : "models/B/results/B_iter_6000000.caffemodel.h5",
+  "likelihood" : "models/B/likelihood.npy"
 }

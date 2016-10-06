@@ -1,5 +1,5 @@
 {
-  "subImageSize" : 65,
+  "subImageSize" : 35,
   "trainImages" : "data/train-volume.tif",
   "trainLabels" : "data/train-labels.tif",
   "trainRange" : "range(0,26)",
@@ -10,8 +10,8 @@
   "testData" : "data/test_65",
   "deployImages" : "data/test-volume.tif",
   "deployRange" : "range(0,1)",
-  "solver" : "models/1/solver.prototxt",
-  "modelPrototxt" : "models/1/deploy.prototxt",
-  "trainedModel" : "models/1/results/1_iter_6000000.caffemodel.h5",
-  "likelihood" : "models/1/likelihood.npy"
+  "solver" : "models/A/solver.prototxt",
+  "modelPrototxt" : "models/A/deploy.prototxt",
+  "trainedModel" : "models/A/results/A_iter_6000000.caffemodel.h5",
+  "likelihood" : "models/A/likelihood.npy"
 }

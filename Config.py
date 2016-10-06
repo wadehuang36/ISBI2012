@@ -31,15 +31,19 @@ class Config:
             self.deployRange = eval(config["deployRange"])
 
         self.solver = config["solver"]
-        self.modelPrototxt = config["modelPrototxt"]
-        self.trainedModel = config["trainedModel"]
+        self.modelPrototxt = str(config["modelPrototxt"])
+        self.trainedModel = str(config["trainedModel"])
         self.likelihood = config["likelihood"]
 
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
 
+        self.resultsPath = os.path.join(self.modelPath, "results")
+        if not os.path.exists(self.resultsPath):
+            os.mkdir(self.resultsPath)
+
         # make out to file and console
-        logFile = os.path.join(self.modelPath, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M.log"))
+        logFile = os.path.join(self.resultsPath, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M.log"))
         fh = logging.FileHandler(logFile)
         fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
         self.logStream = fh.stream

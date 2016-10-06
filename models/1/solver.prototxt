@@ -1,5 +1,5 @@
 # The train/test net protocol buffer definition
-net: "configs/1/full_train_test.prototxt"
+net: "models/1/train_test.prototxt"
 
 # test_iter specifies how many forward passes the test should carry out.
 test_iter: 100
@@ -19,6 +19,6 @@ max_iter: 6000000
 # snapshot intermediate results
 snapshot: 100000
 snapshot_format: HDF5
-snapshot_prefix: "models/1/full"
+snapshot_prefix: "models/1/results/1"
 # solver mode: CPU or GPU
 solver_mode: GPU

@@ -12,7 +12,7 @@ TEST_LABELS = "./data/train-labels.tif"
 
 
 def test():
-    configFile = "/home/wade/Projects/ISBI2012/models/1/full.prototxt"
+    configFile = "/home/wade/Projects/ISBI2012/models/1/deploy.prototxt"
     trainedModel = "/home/wade/Projects/ISBI2012/snapshot/1/full_iter_4000.caffemodel.h5"
     classifier = caffe.Net(configFile, caffe.TEST, weights=trainedModel)
 
@@ -53,7 +53,7 @@ def test():
 
 
 def train():
-    classifier = caffe.Net("/home/wade/Projects/ISBI2012/models/1/full_train_test.prototxt", caffe.TRAIN)
+    classifier = caffe.Net("/home/wade/Projects/ISBI2012/models/1/train_test.prototxt", caffe.TRAIN)
 
     for ni in range(0, 512 * 512 / 64):
         out = classifier.forward()

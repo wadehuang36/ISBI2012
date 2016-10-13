@@ -3,7 +3,9 @@ this file is just for test something, it might be broken.
 """
 import caffe
 import numpy as np
+import numpy.lib.format as ft
 import matplotlib.pyplot as plt
+from matplotlib.backend_bases import NavigationToolbar2
 
 TILE_SIZE = 65
 EDGE_SIZE = int((TILE_SIZE - 1) / 2)
@@ -60,16 +62,61 @@ def train():
         print out
 
 
+curr_pos = 0
+
+
 def show():
-    arr = np.load("test.npy")
-    images = arr.reshape(30, 512, 512, 2)
-    image = images[0, :, :, 1]
-    plt.imshow(image, cmap='Greys_r')
+    arr = np.load("models/1/likelihood.npy")
+    images = arr.reshape(1, 512, 512, 2)
+
+    def handle_back(self, *args, **kwargs):
+        global curr_pos
+        curr_pos = (curr_pos - 1) % 2
+        show()
+
+    def handle_forward(self, *args, **kwargs):
+        global curr_pos
+        curr_pos = (curr_pos + 1) % 2
+        show()
+
+    NavigationToolbar2.back = handle_back
+    NavigationToolbar2.forward = handle_forward
+
+    def show():
+        ax.cla()
+        ax.imshow(images[0, :, :, curr_pos], cmap='Greys_r')
+        fig.canvas.draw()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    show()
+
     plt.show()
-    plt.show()
+
+
+def to_mha():
+    arr = np.load("models/1/likelihood.npy")
+    imageSize = 512 * 512
+    images = arr.reshape(arr.size / imageSize / 2, imageSize, 2)
+    images = images.astype("float32")
+    for i in range(images.shape[0]):
+        with open("models/1/likelihood_%03d.mha" % i, "wb") as mha:
+            mha.write("""ObjectType = Image
+NDims = 2
+BinaryData = True
+BinaryDataByteOrderMSB = False
+DimSize = 512 512
+ElementType = MET_FLOAT
+ElementDataFile = LOCAL
+""")
+            for j in range(images.shape[1]):
+                mha.write(images[i, j, 1])
+
+            mha.flush()
 
 
 if __name__ == "__main__":
     # test()
     # train()
-    show()
+    # show()
+    to_mha()

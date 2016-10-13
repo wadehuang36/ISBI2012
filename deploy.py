@@ -17,7 +17,7 @@ def deploy(config):
     imageSize = h * w
 
     print("Start Deploying")
-    for ni in range(0, n):
+    for ni in range(n):
         for hi in range(h):
             for wi in range(w):
                 i = ni * imageSize + hi * h + wi
@@ -31,6 +31,7 @@ def deploy(config):
                 if i % 1000 == 0:
                     print("\tDeployed #%s" % str(i))
 
+    probs = probs.reshape(n, h, w, 2)
     np.save(config.likelihood, probs)
 
 

@@ -16,7 +16,6 @@
 """
 
 import os
-import caffe
 import numpy as np
 import lmdb
 import Config
@@ -95,6 +94,7 @@ def pixelToDB(dbFile, subImageSize, images, mirroredImages, labels, debug):
     one pixel becomes one image
     It needs 33 GB space, so directly write to DB
     """
+    import caffe
 
     lmdb_env = lmdb.open(dbFile, map_size=int(1e12))
 

@@ -34,6 +34,7 @@ class Config:
         self.modelPrototxt = str(config["modelPrototxt"])
         self.trainedModel = str(config["trainedModel"])
         self.likelihood = config["likelihood"]
+        self.segment = config["segment"]
 
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
@@ -46,11 +47,16 @@ class Config:
         logFile = os.path.join(self.resultsPath, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M.log"))
         fh = logging.FileHandler(logFile)
         fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+        self.stdout = sys.stdout
+        self.stderr = sys.stderr
         self.logStream = fh.stream
         self.logger.addHandler(fh)
         self.logger.addHandler(logging.StreamHandler())
-        sys.stdout = StdWrapper(self.logger, logging.INFO)
+        sys.stdout = StdWrapper(self.logger, logging.DEBUG)
         sys.stderr = StdWrapper(self.logger, logging.ERROR)
+
+    def getResultFile(self, fileName):
+        return os.path.join(self.resultsPath, fileName)
 
 
 class StdWrapper:
@@ -63,6 +69,9 @@ class StdWrapper:
         if msg:
             self.logger.log(self.level, msg)
 
+    def flush(self):
+        pass
+
 
 def load():
     parser = argparse.ArgumentParser()
@@ -71,7 +80,7 @@ def load():
     args, unknown = parser.parse_known_args()
 
     if args.model is None:
-        print ("Place choose a solver file")
+        print ("Place choose a model file")
         files = glob.glob("models/*/config.json")
         for i in range(len(files)):
             print("%s ) %s" % (i + 1, files[i]))

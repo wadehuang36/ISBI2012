@@ -2,13 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import Config
-import convert
+import Convert
 
 curr_pos = 0
 
 
 def show(config):
-    images1 = convert.loadImages(config.deployImages)
+    images1 = Convert.loadImages(config.deployImages)
     images2 = np.load(config.likelihood)[:, :, :, 1]
     images3 = np.load(config.segment)
 

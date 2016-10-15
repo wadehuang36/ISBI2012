@@ -10,16 +10,16 @@ def segment(config):
     for i in range(array.shape[0]):
         likelihoodImages.append(itk.GetImageFromArray(array[i, :, :, 1]))
 
-    watershedImages = _watershed(likelihoodImages)
-    _merge(watershedImages)
+    output = _watershed(likelihoodImages)
+    #output = _merge(output)
 
-    _save(config, array.shape[0:3], watershedImages)
+    _save(config, array.shape[0:3], output)
 
 
 def _watershed(images):
     watershedImages = []
     for i in range(len(images)):
-        output = itk.MorphologicalWatershed(images[i], level=0.1, fullyConnected=True, markWatershedLine=True)
+        output = itk.MorphologicalWatershed(images[i], level=0.3, fullyConnected=True, markWatershedLine=True)
         watershedImages.append(output)
 
     return watershedImages

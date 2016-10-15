@@ -4,6 +4,7 @@ import Config
 import Convert
 import os
 
+
 def deploy(config):
     classifier = caffe.Classifier(config.modelPrototxt, config.trainedModel)
 

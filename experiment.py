@@ -66,17 +66,16 @@ curr_pos = 0
 
 
 def show():
-    arr = np.load("models/1/likelihood.npy")
-    images = arr.reshape(1, 512, 512, 2)
+    images = np.load("models/A/likelihood.npy")
 
     def handle_back(self, *args, **kwargs):
         global curr_pos
-        curr_pos = (curr_pos - 1) % 2
+        curr_pos = (curr_pos - 1) % images.shape[0]
         show()
 
     def handle_forward(self, *args, **kwargs):
         global curr_pos
-        curr_pos = (curr_pos + 1) % 2
+        curr_pos = (curr_pos + 1) % images.shape[0]
         show()
 
     NavigationToolbar2.back = handle_back
@@ -84,7 +83,7 @@ def show():
 
     def show():
         ax.cla()
-        ax.imshow(images[0, :, :, curr_pos], cmap='Greys_r')
+        ax.imshow(images[curr_pos, :, :, 1], cmap='Greys_r')
         fig.canvas.draw()
 
     fig = plt.figure()
@@ -95,12 +94,12 @@ def show():
 
 
 def to_mha():
-    arr = np.load("models/1/likelihood.npy")
+    arr = np.load("models/A/likelihood.npy")
     imageSize = 512 * 512
     images = arr.reshape(arr.size / imageSize / 2, imageSize, 2)
     images = images.astype("float32")
     for i in range(images.shape[0]):
-        with open("models/1/likelihood_%03d.mha" % i, "wb") as mha:
+        with open("models/A/likelihood_%03d.mha" % i, "wb") as mha:
             mha.write("""ObjectType = Image
 NDims = 2
 BinaryData = True

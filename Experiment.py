@@ -65,8 +65,9 @@ def train():
 curr_pos = 0
 
 
-def show():
-    images = np.load("models/A/likelihood.npy")
+def show_likelihood():
+    arr = np.load("models/1/likelihood.npy")
+    images = arr.reshape(1, 512, 512, 2)
 
     def handle_back(self, *args, **kwargs):
         global curr_pos
@@ -90,6 +91,11 @@ def show():
     ax = fig.add_subplot(111)
     show()
 
+    plt.show()
+
+def show_segment():
+    image = np.load("models/A/results/segment_0.npy")
+    plt.imshow(image)
     plt.show()
 
 
@@ -117,5 +123,6 @@ ElementDataFile = LOCAL
 if __name__ == "__main__":
     # test()
     # train()
-    # show()
-    to_mha()
+    # show_likelihood()
+    show_segment()
+    # to_mha()

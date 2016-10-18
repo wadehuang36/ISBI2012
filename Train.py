@@ -7,7 +7,7 @@ def train(config):
     print ("Start train with " + config.solver)
     p = subprocess.Popen(["caffe", "train", "--solver=" + config.solver],
                          stdout=config.logStream,
-                         stdin=config.logStream)
+                         stderr=config.logStream)
     p.communicate()
 
 

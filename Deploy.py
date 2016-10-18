@@ -1,17 +1,18 @@
 import caffe
 import numpy as np
 import Config
-import convert
+import Convert
 import os
+
 
 def deploy(config):
     classifier = caffe.Classifier(config.modelPrototxt, config.trainedModel)
 
-    images = convert.loadImages(config.deployImages)
+    images = Convert.loadImages(config.deployImages)
     if config.deployRange is not None:
         images = images[config.deployRange, ...]
 
-    mirroredImages = convert.mirrorEdges(config.subImageSize, images, config.debug)
+    mirroredImages = Convert.mirrorEdges(config.subImageSize, images, config.debug)
     probs = np.zeros((images.size, 2))
     n, h, w = images.shape
     imageSize = h * w

@@ -13,5 +13,6 @@
   "solver" : "models/A/solver.prototxt",
   "modelPrototxt" : "models/A/deploy.prototxt",
   "trainedModel" : "models/A/results/A_iter_6000000.caffemodel.h5",
-  "likelihood" : "models/A/likelihood.npy"
+  "likelihood" : "models/A/results/likelihood.npy",
+  "segment" : "models/A/results/segment.npy"
 }

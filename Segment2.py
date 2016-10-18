@@ -13,6 +13,7 @@ def segment(config):
         convertLikelihoodNpyToMha(config)
 
     pmFiles = glob.glob(config.getResultFile("pm_*.mha"))
+    pmFiles.sort()
     rawFiles = []
     trustFiles = []
     initSegFiles = []
@@ -22,8 +23,8 @@ def segment(config):
     bcfeatFiles = []
 
     for i in range(len(pmFiles)):
-        rawFiles.append("/data/raw_he_%03d.mha" % i)
-        trustFiles.append("/data/trust_%03d.mha" % i)
+        rawFiles.append("data/raw/raw_%03d.mha" % i)
+        trustFiles.append("data/trust/trust_%03d.png" % i)
         initSegFiles.append(config.getResultFile("initseg_%03d.mha" % i))
         treeFiles.append(config.getResultFile("tree_%03d.ssv" % i))
         saliencyFiles.append(config.getResultFile("saliency_%03d.ssv" % i))
@@ -31,28 +32,19 @@ def segment(config):
         bcfeatFiles.append(config.getResultFile("bcfeat_%03d.ssv" % i))
 
         # step 2
-        subprocess.call(["hnsWatershed", pmFiles[i], 0.1, 0, 1, 1, initSegFiles[i]],
-                        stdout=config.logStream,
-                        stderr=config.logStream)
+        subprocess.check_call(["hnsWatershed", pmFiles[i], "0.1", "0", "1", "1", initSegFiles[i]])
         # step 3
-        subprocess.call(["hnsMerge", initSegFiles[i], pmFiles[i], 50, 200, 0.5, 0, 1, initSegFiles[i]],
-                        stdout=config.logStream,
-                        stderr=config.logStream)
+        subprocess.check_call(["hnsMerge", initSegFiles[i], pmFiles[i], "50", "200", "0.5", "0", "1", initSegFiles[i]])
         # step 4
-        subprocess.call(["hnsGenMerges", initSegFiles[i], pmFiles[i], treeFiles[i], saliencyFiles[i]],
-                        stdout=config.logStream,
-                        stderr=config.logStream)
+        subprocess.check_call(["hnsGenMerges", initSegFiles[i], pmFiles[i], treeFiles[i], saliencyFiles[i]])
+
         # step 5
-        subprocess.call(
+        subprocess.check_call(
             ["hnsGenBoundaryFeatures", initSegFiles[i], treeFiles[i], saliencyFiles[i], rawFiles[i], pmFiles[i],
-             "tdict.ssv", bcfeatFiles[i]],
-            stdout=config.logStream,
-            stderr=config.logStream)
+             "data/tdict.ssv", bcfeatFiles[i]])
         # step 6
-        subprocess.call(
-            ["hnsGenBoundaryLabels", initSegFiles[i], treeFiles[i], trustFiles[i], bclabelFiles[i]],
-            stdout=config.logStream,
-            stderr=config.logStream)
+        subprocess.check_call(
+            ["hnsGenBoundaryLabels", initSegFiles[i], treeFiles[i], trustFiles[i], bclabelFiles[i]])
 
 
 def convertLikelihoodNpyToMha(config):

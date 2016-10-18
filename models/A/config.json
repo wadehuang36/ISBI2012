@@ -8,7 +8,7 @@
   "testLabels" : "data/train-labels.tif",
   "testRange" : "range(26,30)",
   "testData" : "data/test_35",
-  "deployImages" : "data/test-volume.tif",
+  "deployImages" : "data/train-volume.tif",
   "deployRange" : "range(0,30)",
   "solver" : "models/A/solver.prototxt",
   "modelPrototxt" : "models/A/deploy.prototxt",

@@ -5,6 +5,7 @@ import caffe
 import numpy as np
 import numpy.lib.format as ft
 import matplotlib.pyplot as plt
+import struct
 from matplotlib.backend_bases import NavigationToolbar2
 
 TILE_SIZE = 65
@@ -120,9 +121,25 @@ ElementDataFile = LOCAL
             mha.flush()
 
 
+def show_mha(fileName):
+    arr = np.zeros(512*512, dtype="float32")
+
+    with open(fileName, mode="rb") as mha:
+        data = mha.read()
+        index = data.index("ElementDataFile = LOCAL\n")
+        data = data[index + len("ElementDataFile = LOCAL\n"):]
+        for i in range(0, len(data), 4):
+            arr[i/4] = struct.unpack("f", data[i:i+4])[0]
+
+    arr = arr.reshape(512, 512)
+    plt.imshow(arr, cmap='Greys_r')
+    plt.show()
+
+
 if __name__ == "__main__":
     # test()
     # train()
     # show_likelihood()
-    show_segment()
+    # show_segment()
     # to_mha()
+    show_mha("models/A/results/likelihood_000.mha")

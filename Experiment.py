@@ -7,6 +7,7 @@ import numpy.lib.format as ft
 import matplotlib.pyplot as plt
 import struct
 from matplotlib.backend_bases import NavigationToolbar2
+import sklearn.ensemble as ske
 
 TILE_SIZE = 65
 EDGE_SIZE = int((TILE_SIZE - 1) / 2)
@@ -94,6 +95,7 @@ def show_likelihood():
 
     plt.show()
 
+
 def show_segment():
     image = np.load("models/A/results/segment_0.npy")
     plt.imshow(image)
@@ -122,18 +124,50 @@ ElementDataFile = LOCAL
 
 
 def show_mha(fileName):
-    arr = np.zeros(512*512, dtype="float32")
+    arr = np.zeros(512 * 512, dtype="float32")
 
     with open(fileName, mode="rb") as mha:
         data = mha.read()
         index = data.index("ElementDataFile = LOCAL\n")
         data = data[index + len("ElementDataFile = LOCAL\n"):]
         for i in range(0, len(data), 4):
-            arr[i/4] = struct.unpack("f", data[i:i+4])[0]
+            arr[i / 4] = struct.unpack("f", data[i:i + 4])[0]
 
     arr = arr.reshape(512, 512)
     plt.imshow(arr, cmap='Greys_r')
     plt.show()
+
+
+def rf(X, Y):
+    X = readSSV(X)
+    Y = readSSV(Y)
+
+    Y = Y.reshape(Y.size)
+    Y = Y - Y.min()
+    Y = Y / Y.max() + 1
+
+    rfc = ske.RandomForestClassifier(n_estimators=255, min_samples_split=10)
+    rfc.fit(X, Y)
+
+    X_Hat = rfc.apply(X).astype("float32")
+    X_Hat = X_Hat / X_Hat.max()
+    writeSSV(X_Hat, "models/A/results/bcpred_000.ssv")
+
+
+def readSSV(fileName):
+    R = []
+    with open(fileName, "r") as f:
+        for line in f:
+            s = [float(i) for i in line.split(" ")]
+            R.append(s)
+
+    return np.array(R)
+
+
+def writeSSV(R, fileName):
+    with open(fileName, "w") as f:
+        for i in range(R.shape[0]):
+            f.write(str(R[i, 0]) + "\n")
 
 
 if __name__ == "__main__":
@@ -142,4 +176,5 @@ if __name__ == "__main__":
     # show_likelihood()
     # show_segment()
     # to_mha()
-    show_mha("models/A/results/likelihood_000.mha")
+    show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20.mha")
+    # rf("models/A/results/bcfeat_000.ssv", "models/A/results/bclabel_000.ssv")

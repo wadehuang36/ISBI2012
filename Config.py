@@ -82,6 +82,7 @@ def load():
     if args.model is None:
         print ("Place choose a model file")
         files = glob.glob("models/*/config.json")
+        files.sort()
         for i in range(len(files)):
             print("%s ) %s" % (i + 1, files[i]))
 

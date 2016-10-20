@@ -4,6 +4,7 @@ This segmentation is written by others, so the source code ins't updated
 import subprocess, os, sys, glob
 import numpy as np
 import Config
+import sklearn.ensemble as ske
 
 
 def segment(config):
@@ -21,8 +22,10 @@ def segment(config):
     saliencyFiles = []
     bclabelFiles = []
     bcfeatFiles = []
+    bcpredFiles = []
+    finalFiles = []
 
-    for i in range(len(pmFiles)):
+    for i in range(1):
         print ("\tRunning Image %s" % i)
         rawFiles.append("data/raw/raw_%03d.mha" % i)
         trustFiles.append("data/truth/truth_%03d.png" % i)
@@ -31,6 +34,9 @@ def segment(config):
         saliencyFiles.append(config.getResultFile("saliency_%03d.ssv" % i))
         bclabelFiles.append(config.getResultFile("bclabel_%03d.ssv" % i))
         bcfeatFiles.append(config.getResultFile("bcfeat_%03d.ssv" % i))
+        bcfeatFiles.append(config.getResultFile("bcfeat_%03d.ssv" % i))
+        bcpredFiles.append(config.getResultFile("bcpred_%03d.ssv" % i))
+        finalFiles.append(config.getResultFile("final_%03d.mha" % i))
 
         print ("\t\tRunning Step 2")
         subprocess.check_call(["hnsWatershed", pmFiles[i], "0.1", "0", "1", "1", initSegFiles[i]])
@@ -50,13 +56,27 @@ def segment(config):
         subprocess.check_call(
             ["hnsGenBoundaryLabels", initSegFiles[i], treeFiles[i], trustFiles[i], bclabelFiles[i]])
 
-        # print ("\t\tRunning Step 7")
-        #
-        # print ("\t\tRunning Step 8")
-        #
-        print ("\t\tRunning Step 9")
+    print ("\t\tRunning Step 7")
+    x = readSSVs(bcfeatFiles[0:20])
+    y = readSSVs(bclabelFiles[0:20])
+
+    y = y.reshape(y.size)
+    y = y - y.min()
+    y = y / y.max() + 1
+
+    rfc = ske.RandomForestClassifier(n_estimators=255, min_samples_split=10)
+    rfc.fit(x, y)
+
+    print ("\t\tRunning Step 8")
+    for i in range(len(bcfeatFiles)):
+        x = readSSVs(bcfeatFiles[i])
+        x_hat = rfc.apply(x).astype("float32")
+        x_hat = x_hat / x_hat.max()
+        writeSSV(x_hat, bcpredFiles[i])
+
+        print ("\t\tFinish Segment %s" % i)
         subprocess.check_call(
-            ["hnsSegment", initSegFiles[i], treeFiles[i], "bcpred%s.ssv" % i, "1", "0", "seg2d%s.mha" % i])
+            ["hnsSegment", initSegFiles[i], treeFiles[i], bcpredFiles[i], "1", "0", finalFiles[i]])
 
 def convertLikelihoodNpyToMha(config):
     arr = np.load(config.likelihood)
@@ -77,6 +97,22 @@ ElementDataFile = LOCAL
                 mha.write(images[i, j, 1])
 
             mha.flush()
+
+def readSSVs(files):
+    R = []
+    for name in files:
+        with open(name, "r") as f:
+            for line in f:
+                s = [float(i) for i in line.split(" ")]
+                R.append(s)
+
+    return np.array(R)
+
+
+def writeSSV(R, fileName):
+    with open(fileName, "w") as f:
+        for i in range(R.shape[0]):
+            f.write(str(R[i, 0]) + "\n")
 
 
 if __name__ == "__main__":

@@ -9,9 +9,10 @@ curr_pos = 0
 
 
 def show(config):
-    images1 = Convert.loadImages(config.deployImages)
-    images2 = np.load(config.likelihood)[:, :, :, 1]
-    images3 = loadMHA(config, "initseg_*.mha")
+    images1 = Convert.loadImages(config.trainImages)
+    images2 = Convert.loadImages(config.trainLabels)
+    images3 = np.load(config.likelihood)[:, :, :, 1]
+    images4 = loadMHA(config, "final_*.mha")
 
     def press(event):
         global curr_pos
@@ -31,13 +32,18 @@ def show(config):
         plt.axis('off')
 
         plt.subplot(2, 2, 2)
-        plt.title("Likelihood")
+        plt.title("True")
         plt.imshow(images2[curr_pos], cmap="Greys_r")
         plt.axis('off')
 
         plt.subplot(2, 2, 3)
-        plt.title("Init Segment")
-        plt.imshow(images3[curr_pos])
+        plt.title("Likelihood")
+        plt.imshow(images3[curr_pos], cmap="Greys_r")
+        plt.axis('off')
+
+        plt.subplot(2, 2, 4)
+        plt.title("Segment")
+        plt.imshow(images4[curr_pos], cmap="Greys_r")
         plt.axis('off')
 
         fig.suptitle("Image " + str(curr_pos + 1))

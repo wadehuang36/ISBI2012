@@ -8,7 +8,8 @@ def train(config):
     p = subprocess.Popen(["caffe", "train", "--solver=" + config.solver],
                          stdout=config.logStream,
                          stderr=config.logStream)
-    p.communicate()
+    p.wait()
+    config.logStream.flush()
 
 
 if __name__ == "__main__":

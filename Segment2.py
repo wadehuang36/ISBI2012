@@ -34,7 +34,6 @@ def segment(config):
         saliencyFiles.append(config.getResultFile("saliency_%03d.ssv" % i))
         bclabelFiles.append(config.getResultFile("bclabel_%03d.ssv" % i))
         bcfeatFiles.append(config.getResultFile("bcfeat_%03d.ssv" % i))
-        bcfeatFiles.append(config.getResultFile("bcfeat_%03d.ssv" % i))
         bcpredFiles.append(config.getResultFile("bcpred_%03d.ssv" % i))
         finalFiles.append(config.getResultFile("final_%03d.mha" % i))
 
@@ -69,7 +68,7 @@ def segment(config):
 
     print ("\t\tRunning Step 8")
     for i in range(len(bcfeatFiles)):
-        x = readSSVs(bcfeatFiles[i])
+        x = readSSVs(bcfeatFiles[i:i+1])
         x_hat = rfc.apply(x).astype("float32")
         x_hat = x_hat / x_hat.max()
         writeSSV(x_hat, bcpredFiles[i])

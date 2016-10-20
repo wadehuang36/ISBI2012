@@ -43,7 +43,7 @@ def show(config):
 
         plt.subplot(2, 2, 4)
         plt.title("Segment")
-        plt.imshow(images4[curr_pos], cmap="Greys_r")
+        plt.imshow(images4[curr_pos])
         plt.axis('off')
 
         fig.suptitle("Image " + str(curr_pos + 1))

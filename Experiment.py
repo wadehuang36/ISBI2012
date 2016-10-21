@@ -138,9 +138,9 @@ def show_mha(fileName):
     plt.show()
 
 
-def rf(X, Y):
-    X = readSSV(X)
-    Y = readSSV(Y)
+def rf(Xfiles, Yfiles, Tfiles):
+    X = readSSVs(Xfiles)
+    Y = readSSVs(Yfiles)
 
     Y = Y.reshape(Y.size)
     Y = Y - Y.min()
@@ -149,20 +149,20 @@ def rf(X, Y):
     rfc = ske.RandomForestClassifier(n_estimators=255, min_samples_split=10)
     rfc.fit(X, Y)
 
-    X_Hat = rfc.apply(X).astype("float32")
-    X_Hat = X_Hat / X_Hat.max()
-    writeSSV(X_Hat, "models/A/results/bcpred_000.ssv")
+    T = readSSVs(Tfiles)
+    T = rfc.apply(T).astype("float32")
+    T = T / T.max()
+    writeSSV(T, "/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/prediction/bcpred020-1.ssv")
 
-
-def readSSV(fileName):
+def readSSVs(files):
     R = []
-    with open(fileName, "r") as f:
-        for line in f:
-            s = [float(i) for i in line.split(" ")]
-            R.append(s)
+    for name in files:
+        with open(name, "r") as f:
+            for line in f:
+                s = [float(i) for i in line.split(" ")]
+                R.append(s)
 
     return np.array(R)
-
 
 def writeSSV(R, fileName):
     with open(fileName, "w") as f:
@@ -177,4 +177,6 @@ if __name__ == "__main__":
     # show_segment()
     # to_mha()
     show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20.mha")
-    # rf("models/A/results/bcfeat_000.ssv", "models/A/results/bclabel_000.ssv")
+    # rf(["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat%03d.ssv" % i for i in range(20)],
+    #    ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/label/bclabel%03d.ssv" % i for i in range(20)],
+    #    ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat020.ssv"])

@@ -11,7 +11,7 @@ curr_pos = 0
 def show(config):
     images1 = Convert.loadImages(config.trainImages)
     images2 = Convert.loadImages(config.trainLabels)
-    images3 = np.load(config.likelihood)[:, :, :, 1]
+    images3 = np.load(config.likelihood)[:, :, :, 0]
     images4 = loadMHA(config, "final_*.mha")
 
     def press(event):

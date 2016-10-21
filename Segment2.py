@@ -25,7 +25,7 @@ def segment(config):
     bcpredFiles = []
     finalFiles = []
 
-    for i in range(1):
+    for i in range(len(pmFiles)):
         print ("\tRunning Image %s" % i)
         rawFiles.append("data/raw/raw_%03d.mha" % i)
         trustFiles.append("data/truth/truth_%03d.png" % i)
@@ -93,7 +93,7 @@ ElementType = MET_FLOAT
 ElementDataFile = LOCAL
 """)
             for j in range(images.shape[1]):
-                mha.write(images[i, j, 1])
+                mha.write(images[i, j, 0])
 
             mha.flush()
 

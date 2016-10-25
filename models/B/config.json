@@ -8,11 +8,11 @@
   "testLabels" : "data/train-labels.tif",
   "testRange" : "range(26,30)",
   "testData" : "data/test_65",
-  "deployImages" : "data/test-volume.tif",
-  "deployRange" : "range(0,1)",
+  "deployImages" : "data/train-volume.tif",
+  "deployRange" : "range(0,30)",
   "solver" : "models/B/solver.prototxt",
   "modelPrototxt" : "models/B/deploy.prototxt",
   "trainedModel" : "models/B/results/B_iter_6000000.caffemodel.h5",
-  "likelihood" : "models/B/likelihood.npy",
+  "likelihood" : "models/B/results/likelihood.npy",
   "segment" : "models/B/results/segment.npy"
 }

@@ -76,7 +76,7 @@ class StdWrapper:
 def load():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", dest="model")
-    parser.add_argument("--debug", dest="debug")
+    parser.add_argument("--debug", dest="debug", default="0")
     args, unknown = parser.parse_known_args()
 
     if args.model is None:
@@ -95,7 +95,7 @@ def load():
     else:
         modelFile = "models/%s/config.json" % args.model
 
-    debug = "--debug" in sys.argv
+    debug = args.debug.lower() == "true" or args.debug == "1"
     config = Config(modelFile, debug)
 
     if debug:

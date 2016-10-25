@@ -17,9 +17,11 @@
 
 import os
 import numpy as np
+import struct
+
 import lmdb
 import Config
-from PIL import Image
+import tifffile
 
 
 def loadImages(fileName):
@@ -27,22 +29,7 @@ def loadImages(fileName):
         raise RuntimeError("% is missing." % fileName)
 
     # read images in tiff format
-    images = []
-    tiff = Image.open(fileName)
-    while True:
-        image = np.array(tiff)
-        if image.ndim == 2:
-            image = image[np.newaxis, ...]
-
-        images.append(image)
-
-        try:
-            tiff.seek(tiff.tell() + 1)
-        except EOFError:
-            # this just means hit end of file (not really an error)
-            break
-
-    return np.concatenate(images)
+    return tifffile.imread(fileName)
 
 
 def convertLabels(images):
@@ -83,8 +70,7 @@ def mirrorEdges(subImageSize, images, debug):
         copy[ni, -edgeSize:, :] = np.flipud(copy[ni, (-2 * edgeSize - 1):(-edgeSize - 1), :])
 
     if debug:
-        Image.fromarray(images[0, ...]).save("./debug/1.jpeg")
-        Image.fromarray(copy[0, ...]).save("./debug/mirrored_1.jpeg")
+        tifffile.imsave("./debug/mirrored.tif", copy)
 
     return copy
 
@@ -117,10 +103,29 @@ def pixelToDB(dbFile, subImageSize, images, mirroredImages, labels, debug):
                 if i % 10000 == 0:
                     print("\tConverting #%s" % str(i))
                     if debug:
-                        Image.fromarray(image[0, ...]).save("./debug/tile_%s.jpeg" % i)
+                        tifffile.imsave("./debug/tile_%s.tif" % i, image[0, ...])
 
         lmdb_txn.commit()
 
+def loadMHA(mhas):
+    mhas.sort()
+
+    arrs = []
+    for f in mhas:
+        with open(f, mode="rb") as mha:
+            arr = []
+            data = mha.read()
+            index = data.index("ElementDataFile = LOCAL\n")
+            data = data[index + len("ElementDataFile = LOCAL\n"):]
+            for i in range(0, len(data), 4):
+                arr.append(struct.unpack("f", data[i:i + 4])[0])
+
+            size = int(len(arr) ** 0.5)
+            arr = np.array(arr).reshape(1, size, size)
+            arrs.append(arr)
+
+    arrs = np.concatenate(arrs)
+    return arrs
 
 def convert(config):
     if os.path.exists(config.trainData):

@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import struct
 from matplotlib.backend_bases import NavigationToolbar2
 import sklearn.ensemble as ske
+import tifffile
 
 TILE_SIZE = 65
 EDGE_SIZE = int((TILE_SIZE - 1) / 2)
@@ -152,7 +153,9 @@ def rf(Xfiles, Yfiles, Tfiles):
     T = readSSVs(Tfiles)
     T = rfc.apply(T).astype("float32")
     T = T / T.max()
-    writeSSV(T, "/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/prediction/bcpred020-1.ssv")
+    writeSSV(T,
+             "/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/prediction/bcpred020-1.ssv")
+
 
 def readSSVs(files):
     R = []
@@ -164,11 +167,20 @@ def readSSVs(files):
 
     return np.array(R)
 
+
 def writeSSV(R, fileName):
     with open(fileName, "w") as f:
         for i in range(R.shape[0]):
             f.write(str(R[i, 0]) + "\n")
 
+
+def arrayToTif():
+    arr = np.load("models/A/results/likelihood.npy")
+    arr[arr > 0.5] = 255
+    arr[arr <= 0.5] = 0
+    arr = arr.astype(np.uint8)
+
+    tifffile.imsave("data/result.tif", arr[:, :, :, 1])
 
 if __name__ == "__main__":
     # test()
@@ -176,7 +188,9 @@ if __name__ == "__main__":
     # show_likelihood()
     # show_segment()
     # to_mha()
-    show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20.mha")
+    # show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20.mha")
+    # show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20-1.mha")
     # rf(["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat%03d.ssv" % i for i in range(20)],
     #    ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/label/bclabel%03d.ssv" % i for i in range(20)],
     #    ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat020.ssv"])
+    arrayToTif()

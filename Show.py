@@ -32,17 +32,17 @@ def show(config):
         plt.axis('off')
 
         plt.subplot(2, 2, 2)
-        plt.title("True")
+        plt.title("Labels")
         plt.imshow(images2[curr_pos], cmap="Greys_r")
         plt.axis('off')
 
         plt.subplot(2, 2, 3)
-        plt.title("Likelihood")
+        plt.title("CNN Result")
         plt.imshow(images3[curr_pos], cmap="Greys_r")
         plt.axis('off')
 
         plt.subplot(2, 2, 4)
-        plt.title("Segment")
+        plt.title("Segment Result")
         plt.imshow(images4[curr_pos])
         plt.axis('off')
 

@@ -1,7 +1,7 @@
 """
 This segmentation is written by others, so the source code ins't updated
 """
-import subprocess, os, sys, glob
+import subprocess, glob
 import numpy as np
 import Config
 import sklearn.ensemble as ske

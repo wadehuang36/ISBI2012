@@ -36,10 +36,6 @@ The execution log will be written in place of /models/{model}/results/{time}.log
 you can run Show.py to visualize results and use key ← and key → to switch images.
 ![Alt sample](sample.png)
 
-## Acknowledge
-
-Adviser: Dr. Chao Chen
-
 ## Caution
 The Segment code is writen by another team in C++, so it doesn't include in this repo(I might or might not change it to python). Also, this project is for learning, so the quality might not be good. 
  

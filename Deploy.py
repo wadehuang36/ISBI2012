@@ -17,6 +17,7 @@ def deploy(config):
 
     print("Start Deploying")
     for ni in range(n):
+        print("\tDeploying Image " % ni)
         for hi in range(h):
             for wi in range(w):
                 i = ni * imageSize + hi * h + wi
@@ -26,9 +27,6 @@ def deploy(config):
                 prob = classifier.predict(image, oversample=False)[0]
 
                 probs[i, ...] = prob
-
-                if i % 1000 == 0:
-                    print("\tDeployed #%s" % str(i))
 
     probs = probs.reshape(n, h, w, 2)
     np.save(config.likelihood, probs)

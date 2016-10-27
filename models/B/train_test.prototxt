@@ -81,7 +81,6 @@ layer {
   convolution_param {
     num_output: 50
     kernel_size: 5
-    pad:1
     stride: 1
     weight_filler {
       type: "xavier"

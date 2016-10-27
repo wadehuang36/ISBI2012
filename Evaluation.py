@@ -8,7 +8,7 @@ import Convert
 
 
 def evaluation(config):
-    print ("Evaluating likelihood")
+    print ("Evaluating Likelihood")
     arr = np.load(config.likelihood)
     arr[arr > 0.5] = 255
     arr[arr <= 0.5] = 0

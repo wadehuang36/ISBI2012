@@ -1,9 +1,37 @@
-name: "ISBI2012_Deploy"
+name: "ISBI2012_train_test"
 layer {
   name: "data"
-  type: "Input"
+  type: "Data"
   top: "data"
-  input_param { shape: { dim: 1 dim: 1 dim: 65 dim: 65 } }
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    scale: 0.00390625
+  }
+  data_param {
+    source: "data/train_95"
+    batch_size: 256
+    backend: LMDB
+  }
+}
+layer {
+  name: "label"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    scale: 0.00390625
+  }
+  data_param {
+    source: "data/test_95"
+    batch_size: 100
+    backend: LMDB
+  }
 }
 layer {
   name: "conv1"
@@ -17,8 +45,8 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 30
-    kernel_size: 10
+    num_output: 48
+    kernel_size: 4
     stride: 1
     weight_filler {
       type: "xavier"
@@ -29,9 +57,20 @@ layer {
   }
 }
 layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "conv1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
   name: "pool1"
   type: "Pooling"
-  bottom: "conv1"
+  bottom: "norm1"
   top: "pool1"
   pooling_param {
     pool: MAX
@@ -51,7 +90,7 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 50
+    num_output: 128
     kernel_size: 5
     stride: 1
     weight_filler {
@@ -63,20 +102,9 @@ layer {
   }
 }
 layer {
-  name: "pool2"
-  type: "Pooling"
-  bottom: "conv2"
-  top: "pool2"
-  pooling_param {
-    pool: MAX
-    kernel_size: 2
-    stride: 2
-  }
-}
-layer {
   name: "conv3"
   type: "Convolution"
-  bottom: "pool2"
+  bottom: "conv2"
   top: "conv3"
   param {
     lr_mult: 1
@@ -85,8 +113,8 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 60
-    kernel_size: 3
+    num_output: 128
+    kernel_size: 5
     stride: 1
     weight_filler {
       type: "xavier"
@@ -97,9 +125,31 @@ layer {
   }
 }
 layer {
+  name: "norm2"
+  type: "LRN"
+  bottom: "conv3"
+  top: "norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "norm2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
   name: "conv4"
   type: "Convolution"
-  bottom: "conv3"
+  bottom: "pool2"
   top: "conv4"
   param {
     lr_mult: 1
@@ -108,8 +158,54 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 60
-    kernel_size: 3
+    num_output: 256
+    kernel_size: 6
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 6
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "conv6"
+  type: "Convolution"
+  bottom: "conv5"
+  top: "conv6"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 6
     stride: 1
     weight_filler {
       type: "xavier"
@@ -122,7 +218,7 @@ layer {
 layer {
   name: "pool3"
   type: "Pooling"
-  bottom: "conv4"
+  bottom: "conv6"
   top: "pool3"
   pooling_param {
     pool: MAX
@@ -152,9 +248,18 @@ layer {
   }
 }
 layer {
+  name: "drop1"
+  type: "Dropout"
+  bottom: "ip1"
+  top: "drop1"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
   name: "ip2"
   type: "InnerProduct"
-  bottom: "ip1"
+  bottom: "drop1"
   top: "ip2"
   param {
     lr_mult: 1
@@ -173,8 +278,19 @@ layer {
   }
 }
 layer {
-  name: "prob"
-  type: "Softmax"
+  name: "accuracy"
+  type: "Accuracy"
   bottom: "ip2"
-  top: "prob"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
 }

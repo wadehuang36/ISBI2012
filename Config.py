@@ -61,30 +61,30 @@ class Config:
         sys.stdout = StdWrapper(self.logger, logging.DEBUG)
         sys.stderr = StdWrapper(self.logger, logging.ERROR)
 
-        self.time = time.time()
+        self.start = time.time()
 
     def getResultFile(self, fileName):
         return os.path.join(self.resultsPath, fileName)
 
     def showRunTime(self):
-        """
-        From seconds to Days;Hours:Minutes;Seconds
-        """
-        value = time.time() - self.time
+        intervals = (
+            ('weeks', 604800),
+            ('days', 86400),
+            ('hours', 3600),
+            ('mins', 60),
+            ('secs', 1),
+        )
 
-        valueD = (((value / 365) / 24) / 60)
-        Days = int(valueD)
-
-        valueH = (valueD - Days) * 365
-        Hours = int(valueH)
-
-        valueM = (valueH - Hours) * 24
-        Minutes = int(valueM)
-
-        valueS = (valueM - Minutes) * 60
-        Seconds = int(valueS)
-
-        print Days, ";", Hours, ":", Minutes, ";", Seconds
+        seconds = time.time() - self.start
+        result = []
+        for name, count in intervals:
+            value = int(seconds // count)
+            if value:
+                seconds -= value * count
+                if value == 1:
+                    name = name.rstrip('s')
+                result.append("{} {}".format(value, name))
+        print ', '.join(result)
 
 
 class StdWrapper:

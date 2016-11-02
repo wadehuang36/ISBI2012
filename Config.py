@@ -5,6 +5,7 @@ import argparse
 import glob
 import logging
 import datetime
+import time
 
 
 class Config:
@@ -60,8 +61,30 @@ class Config:
         sys.stdout = StdWrapper(self.logger, logging.DEBUG)
         sys.stderr = StdWrapper(self.logger, logging.ERROR)
 
+        self.time = time.time()
+
     def getResultFile(self, fileName):
         return os.path.join(self.resultsPath, fileName)
+
+    def showRunTime(self):
+        """
+        From seconds to Days;Hours:Minutes;Seconds
+        """
+        value = time.time() - self.time
+
+        valueD = (((value / 365) / 24) / 60)
+        Days = int(valueD)
+
+        valueH = (valueD - Days) * 365
+        Hours = int(valueH)
+
+        valueM = (valueH - Hours) * 24
+        Minutes = int(valueM)
+
+        valueS = (valueM - Minutes) * 60
+        Seconds = int(valueS)
+
+        print Days, ";", Hours, ":", Minutes, ";", Seconds
 
 
 class StdWrapper:

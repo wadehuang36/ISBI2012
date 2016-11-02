@@ -55,8 +55,8 @@ def segment(config):
             ["hnsGenBoundaryLabels", initSegFiles[i], treeFiles[i], trustFiles[i], bclabelFiles[i]])
 
     print ("\t\tRunning Step 7 And 8")
-    x = readSSVs(bcfeatFiles[0:20])
-    y = readSSVs(bclabelFiles[0:20])
+    x = readSSVs(bcfeatFiles)
+    y = readSSVs(bclabelFiles)
 
     y = y.reshape(y.size)
     y = y - y.min()
@@ -75,6 +75,7 @@ def segment(config):
         print ("\t\tFinish Segment %s" % i)
         subprocess.check_call(
             ["hnsSegment", initSegFiles[i], treeFiles[i], bcpredFiles[i], "1", "0", finalFiles[i]])
+
 
 def convertLikelihoodNpyToMha(config):
     arr = np.load(config.likelihood)
@@ -96,6 +97,7 @@ ElementDataFile = LOCAL
 
             mha.flush()
 
+
 def readSSVs(files):
     R = []
     for name in files:
@@ -114,4 +116,6 @@ def writeSSV(R, fileName):
 
 
 if __name__ == "__main__":
-    segment(Config.load())
+    config = Config.load()
+    segment(config)
+    config.showRunTime()

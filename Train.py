@@ -13,4 +13,6 @@ def train(config):
 
 
 if __name__ == "__main__":
-    train(Config.load())
+    config = Config.load()
+    train(config)
+    config.showRunTime()

@@ -151,4 +151,6 @@ def convert(config):
 
 
 if __name__ == "__main__":
-    convert(Config.load())
+    config = Config.load()
+    convert(config)
+    config.showRunTime()

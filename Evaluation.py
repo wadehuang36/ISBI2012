@@ -39,4 +39,5 @@ def evaluation(config):
 
 
 if __name__ == "__main__":
-    evaluation(Config.load())
+    config = Config.load()
+    evaluation(config)

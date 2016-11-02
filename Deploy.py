@@ -37,4 +37,6 @@ def deploy(config):
 
 
 if __name__ == "__main__":
-    deploy(Config.load())
+    config = Config.load()
+    deploy(config)
+    config.showRunTime()

@@ -190,7 +190,7 @@ if __name__ == "__main__":
     # to_mha()
     # show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20.mha")
     # show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20-1.mha")
-    # rf(["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat%03d.ssv" % i for i in range(20)],
-    #    ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/label/bclabel%03d.ssv" % i for i in range(20)],
-    #    ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat020.ssv"])
-    arrayToTif()
+    rf(["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat%03d.ssv" % i for i in range(20)],
+       ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/label/bclabel%03d.ssv" % i for i in range(20)],
+       ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat020.ssv"])
+    # arrayToTif()

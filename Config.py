@@ -30,6 +30,11 @@ class Config:
         if "deployRange" in config:
             self.deployRange = eval(config["deployRange"])
 
+        if "deployBatch" in config:
+            self.deployBatch = int(config["deployBatch"])
+        else:
+            self.deployBatch = 128
+
         self.solver = config["solver"]
         self.modelPrototxt = str(config["modelPrototxt"])
         self.trainedModel = str(config["trainedModel"])

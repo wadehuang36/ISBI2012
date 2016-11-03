@@ -6,7 +6,7 @@ This project use CNN to classify each pixel is border or not (binary classifier)
 
 1. [Caffe](http://caffe.berkeleyvision.org/), follow the install instruction, if it isn't in your machine. 
 2. [The images of ISBI 2012 challenges](http://brainiac2.mit.edu/isbi_challenge/home), download the images and place them in ./data folder
-3. Python 2.7 with numpy, tifffile, lmdb, sklearn and matplotlib packages
+3. Python 2.7 with protobuf, numpy, tifffile, sklearn and matplotlib packages
 4. Java 8
 
 To start, you can just type 
@@ -22,11 +22,10 @@ python all.py --model={model}
 the rule of finding model is ./models/{model}/config.json where {model} is the value you input.
 
 ## Tasks
-1. Convert.py, mirror and tile images to LMDB for Caffe.
-2. Train.py, run Caffe train with data generated from task 1
-3. Deploy.py, run Caffe classifer with trained-model generated from task 2.
-4. Segment.py, run segmentation with likelihood generated from task 3.
-5. Evaluation.py, run a java library to evaluate results from task 4.
+1. Train.py, run Caffe train with pre-processed images.
+2. Deploy.py, run Caffe classifer with trained-model generated from task 1.
+3. Segment.py, run segmentation with likelihood generated from task 2.
+4. Evaluation.py, run a java library to evaluate results from task 3.
 
 All.py is just run all tasks together.
 

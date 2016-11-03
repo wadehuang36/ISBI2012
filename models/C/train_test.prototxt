@@ -12,7 +12,7 @@ layer {
   }
   data_param {
     source: "data/train_95"
-    batch_size: 256
+    batch_size: 128
     backend: LMDB
   }
 }
@@ -238,7 +238,7 @@ layer {
     lr_mult: 2
   }
   inner_product_param {
-    num_output: 100
+    num_output: 500
     weight_filler {
       type: "xavier"
     }

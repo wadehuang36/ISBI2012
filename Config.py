@@ -21,6 +21,11 @@ class Config:
         if "trainRange" in config:
             self.trainRange = eval(config["trainRange"])
 
+        if "trainBatch" in config:
+            self.trainBatch = int(config["trainBatch"])
+        else:
+            self.trainBatch = 128
+
         self.testData = config["testData"]
         self.testImages = config["testImages"]
         self.testLabels = config["testLabels"]
@@ -36,7 +41,7 @@ class Config:
         else:
             self.deployBatch = 128
 
-        self.solver = config["solver"]
+        self.solver = str(config["solver"])
         self.modelPrototxt = str(config["modelPrototxt"])
         self.trainedModel = str(config["trainedModel"])
         self.likelihood = config["likelihood"]

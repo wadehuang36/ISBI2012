@@ -19,7 +19,6 @@ import os
 import numpy as np
 import struct
 
-import lmdb
 import Config
 import tifffile
 
@@ -78,9 +77,10 @@ def mirrorEdges(subImageSize, images, debug):
 def pixelToDB(dbFile, subImageSize, images, mirroredImages, labels, debug):
     """
     one pixel becomes one image
-    It needs 33 GB space, so directly write to DB
+    It needs 330 GB space, so directly write to DB, so we change to memory input
     """
     import caffe
+    import lmdb
 
     lmdb_env = lmdb.open(dbFile, map_size=int(1e12))
 
@@ -88,6 +88,8 @@ def pixelToDB(dbFile, subImageSize, images, mirroredImages, labels, debug):
     imageSize = h * w
     for ni in range(n):
         lmdb_txn = lmdb_env.begin(write=True)
+
+        print("\tConverting Image %s" % str(ni))
         for hi in range(h):
             for wi in range(w):
                 i = ni * imageSize + hi * h + wi
@@ -100,12 +102,11 @@ def pixelToDB(dbFile, subImageSize, images, mirroredImages, labels, debug):
                 keystr = '{:0>8d}'.format(i)
                 lmdb_txn.put(keystr, datum.SerializeToString())
 
-                if i % 10000 == 0:
-                    print("\tConverting #%s" % str(i))
-                    if debug:
-                        tifffile.imsave("./debug/tile_%s.tif" % i, image[0, ...])
+                if debug and i % 10000 == 0:
+                    tifffile.imsave("./debug/tile_%s.tif" % i, image[0, ...])
 
         lmdb_txn.commit()
+
 
 def loadMHA(mhas):
     mhas.sort()
@@ -126,6 +127,7 @@ def loadMHA(mhas):
 
     arrs = np.concatenate(arrs)
     return arrs
+
 
 def convert(config):
     if os.path.exists(config.trainData):

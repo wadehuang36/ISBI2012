@@ -5,9 +5,10 @@ import numpy as np
 import glob
 import tifffile
 import Convert
+import sys
 
 
-def evaluation(config):
+def evaluation_likelihood(config):
     print ("Evaluating Likelihood")
     arr = np.load(config.likelihood)
     arr[arr > 0.5] = 255
@@ -23,6 +24,8 @@ def evaluation(config):
     p.wait()
     config.logStream.flush()
 
+
+def evaluation_final(config):
     print ("Evaluating Final Result")
     arr = Convert.loadMHA(glob.glob(config.getResultFile("final_*.mha")))
     arr[arr != 0.0] = 255
@@ -40,4 +43,8 @@ def evaluation(config):
 
 if __name__ == "__main__":
     config = Config.load()
-    evaluation(config)
+    if "-nl" not in sys.argv:
+        evaluation_likelihood(config)
+
+    if "-nf" not in sys.argv:
+        evaluation_final(config)

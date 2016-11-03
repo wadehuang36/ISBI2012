@@ -1,37 +1,15 @@
 name: "ISBI2012_train_test"
 layer {
   name: "data"
-  type: "Data"
+  type: "Input"
   top: "data"
-  top: "label"
-  include {
-    phase: TRAIN
-  }
-  transform_param {
-    scale: 0.00390625
-  }
-  data_param {
-    source: "data/train_35"
-    batch_size: 64
-    backend: LMDB
-  }
+  input_param { shape: { dim: 128 dim: 1 dim: 35 dim: 35 } }
 }
 layer {
   name: "label"
-  type: "Data"
-  top: "data"
+  type: "Input"
   top: "label"
-  include {
-    phase: TEST
-  }
-  transform_param {
-    scale: 0.00390625
-  }
-  data_param {
-    source: "data/test_35"
-    batch_size: 100
-    backend: LMDB
-  }
+  input_param { shape: { dim: 128 } }
 }
 layer {
   name: "conv1"
@@ -201,16 +179,6 @@ layer {
     bias_filler {
       type: "constant"
     }
-  }
-}
-layer {
-  name: "accuracy"
-  type: "Accuracy"
-  bottom: "ip2"
-  bottom: "label"
-  top: "accuracy"
-  include {
-    phase: TEST
   }
 }
 layer {

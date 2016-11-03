@@ -58,11 +58,12 @@ def test():
 
 
 def train():
-    classifier = caffe.Net("/home/wade/Projects/ISBI2012/models/1/train_test.prototxt", caffe.TRAIN)
+    classifier = caffe.Net("/home/wade/Projects/ISBI2012/models/C/train_test.prototxt", caffe.TRAIN)
 
-    for ni in range(0, 512 * 512 / 64):
-        out = classifier.forward()
-        print out
+    classifier.forward()
+    classifier.forward()
+    classifier.forward()
+    classifier.forward()
 
 
 curr_pos = 0
@@ -184,13 +185,13 @@ def arrayToTif():
 
 if __name__ == "__main__":
     # test()
-    # train()
+    train()
     # show_likelihood()
     # show_segment()
     # to_mha()
     # show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20.mha")
     # show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20-1.mha")
-    rf(["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat%03d.ssv" % i for i in range(20)],
-       ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/label/bclabel%03d.ssv" % i for i in range(20)],
-       ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat020.ssv"])
+    # rf(["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat%03d.ssv" % i for i in range(20)],
+    #    ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/label/bclabel%03d.ssv" % i for i in range(20)],
+    #    ["/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/Result0113-ISBI12-20Training/feature/bcfeat020.ssv"])
     # arrayToTif()

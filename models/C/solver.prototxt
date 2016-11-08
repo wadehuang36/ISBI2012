@@ -19,4 +19,4 @@ max_iter: 5242880
 snapshot_format: HDF5
 snapshot_prefix: "models/C/results/C"
 # solver mode: CPU or GPU
-solver_mode: GPU ALL
+solver_mode: GPU

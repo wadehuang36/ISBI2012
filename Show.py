@@ -79,4 +79,4 @@ def loadMHA(config, pattern):
 
 
 if __name__ == "__main__":
-    show(Config.load())
+    show(Config.load(False))

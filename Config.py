@@ -9,7 +9,7 @@ import time
 
 
 class Config:
-    def __init__(self, modelFile, debug):
+    def __init__(self, modelFile, debug, log=True):
         config = json.load(open(modelFile))
         self.modelPath = os.path.dirname(modelFile)
         self.debug = debug
@@ -55,16 +55,17 @@ class Config:
             os.mkdir(self.resultsPath)
 
         # make out to file and console
-        logFile = os.path.join(self.resultsPath, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M.log"))
-        fh = logging.FileHandler(logFile)
-        fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
-        self.stdout = sys.stdout
-        self.stderr = sys.stderr
-        self.logStream = fh.stream
-        self.logger.addHandler(fh)
-        self.logger.addHandler(logging.StreamHandler())
-        sys.stdout = StdWrapper(self.logger, logging.DEBUG)
-        sys.stderr = StdWrapper(self.logger, logging.ERROR)
+        if log:
+            logFile = os.path.join(self.resultsPath, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M.log"))
+            fh = logging.FileHandler(logFile)
+            fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+            self.stdout = sys.stdout
+            self.stderr = sys.stderr
+            self.logStream = fh.stream
+            self.logger.addHandler(fh)
+            self.logger.addHandler(logging.StreamHandler())
+            sys.stdout = StdWrapper(self.logger, logging.DEBUG)
+            sys.stderr = StdWrapper(self.logger, logging.ERROR)
 
         self.start = time.time()
 
@@ -106,7 +107,7 @@ class StdWrapper:
         pass
 
 
-def load():
+def load(log=True):
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", dest="model")
     parser.add_argument("--debug", dest="debug", default="0")
@@ -129,7 +130,7 @@ def load():
         modelFile = "models/%s/config.json" % args.model
 
     debug = args.debug.lower() == "true" or args.debug == "1"
-    config = Config(modelFile, debug)
+    config = Config(modelFile, debug, log)
 
     if debug:
         if not os.path.exists("./debug"):

@@ -2,8 +2,8 @@
 net: "models/C/train_test.prototxt"
 
 # test_iter specifies how many forward passes the test should carry out.
-test_iter: 100
-test_interval: 1000
+test_iter: 64
+test_interval: 1024
 
 # The base learning rate, momentum and the weight decay of the network.
 lr_policy: "step"
@@ -19,4 +19,4 @@ max_iter: 5242880
 snapshot_format: HDF5
 snapshot_prefix: "models/C/results/C"
 # solver mode: CPU or GPU
-solver_mode: GPU
+solver_mode: GPU ALL

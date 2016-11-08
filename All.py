@@ -8,6 +8,8 @@ import Evaluation
 if __name__ == "__main__":
     config = Config.load()
 
+    Convert.convert(config)
+
     Train.train(config)
     config.showRunTime()
 

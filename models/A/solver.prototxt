@@ -1,6 +1,9 @@
 # The train/test net protocol buffer definition
 net: "models/A/train_test.prototxt"
 
+test_iter: 64
+test_interval: 1024
+
 base_lr: 0.01
 
 lr_policy: "step"

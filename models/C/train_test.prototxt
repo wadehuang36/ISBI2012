@@ -1,15 +1,37 @@
 name: "ISBI2012_train_test"
 layer {
   name: "data"
-  type: "Input"
+  type: "Data"
   top: "data"
-  input_param { shape: { dim: 128 dim: 1 dim: 95 dim: 95 } }
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    scale: 0.00390625
+  }
+  data_param {
+    source: "data/train_95"
+    batch_size: 128
+    backend: LMDB
+  }
 }
 layer {
   name: "label"
-  type: "Input"
+  type: "Data"
+  top: "data"
   top: "label"
-  input_param { shape: { dim: 128 } }
+  include {
+    phase: TEST
+  }
+  transform_param {
+    scale: 0.00390625
+  }
+  data_param {
+    source: "data/test_95"
+    batch_size: 100
+    backend: LMDB
+  }
 }
 layer {
   name: "conv1"

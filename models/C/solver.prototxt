@@ -8,8 +8,8 @@ test_interval: 1024
 # The base learning rate, momentum and the weight decay of the network.
 lr_policy: "step"
 base_lr: 0.01
-momentum: 0.9
-stepsize: 100000
+momentum: 0.0
+stepsize: 70000
 gamma: 0.1
 
 display: 128

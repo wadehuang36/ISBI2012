@@ -12,7 +12,7 @@ momentum: 0.9
 stepsize: 100000
 gamma: 0.1
 
-display: 10000
+display: 128
 # The maximum number of iterations
 max_iter: 5242880
 # snapshot: 100000

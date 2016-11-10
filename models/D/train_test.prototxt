@@ -1,9 +1,37 @@
-name: "ISBI2012_Deploy"
+name: "ISBI2012_train_test"
 layer {
   name: "data"
-  type: "Input"
+  type: "Data"
   top: "data"
-  input_param { shape: { dim: 128 dim: 1 dim: 95 dim: 95 } }
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    scale: 0.00390625
+  }
+  data_param {
+    source: "data/train_95"
+    batch_size: 128
+    backend: LMDB
+  }
+}
+layer {
+  name: "label"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    scale: 0.00390625
+  }
+  data_param {
+    source: "data/test_95"
+    batch_size: 100
+    backend: LMDB
+  }
 }
 layer {
   name: "conv1"
@@ -18,7 +46,7 @@ layer {
   }
   convolution_param {
     num_output: 48
-    kernel_size: 4
+    kernel_size: 8
     stride: 1
     weight_filler {
       type: "xavier"
@@ -70,7 +98,7 @@ layer {
   }
   convolution_param {
     num_output: 128
-    kernel_size: 5
+    kernel_size: 6
     stride: 1
     weight_filler {
       type: "xavier"
@@ -99,7 +127,7 @@ layer {
   }
   convolution_param {
     num_output: 128
-    kernel_size: 5
+    kernel_size: 6
     stride: 1
     weight_filler {
       type: "xavier"
@@ -151,7 +179,7 @@ layer {
   }
   convolution_param {
     num_output: 256
-    kernel_size: 6
+    kernel_size: 4
     stride: 1
     weight_filler {
       type: "xavier"
@@ -180,7 +208,7 @@ layer {
   }
   convolution_param {
     num_output: 256
-    kernel_size: 6
+    kernel_size: 3
     stride: 1
     weight_filler {
       type: "xavier"
@@ -209,7 +237,7 @@ layer {
   }
   convolution_param {
     num_output: 256
-    kernel_size: 6
+    kernel_size: 3
     stride: 1
     weight_filler {
       type: "xavier"
@@ -288,8 +316,19 @@ layer {
   }
 }
 layer {
-  name: "prob"
-  type: "Softmax"
+  name: "accuracy"
+  type: "Accuracy"
   bottom: "ip2"
-  top: "prob"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
 }

@@ -8,14 +8,14 @@ test_interval: 1024
 # The base learning rate, momentum and the weight decay of the network.
 lr_policy: "step"
 base_lr: 0.01
-momentum: 0.0
-stepsize: 70000
+momentum: 0.9
+stepsize: 100000
 gamma: 0.1
 
-display: 128
+display: 8
 # The maximum number of iterations
-max_iter: 5242880
-# snapshot: 100000
+max_iter: 128
+snapshot: 20000
 snapshot_format: HDF5
 snapshot_prefix: "models/C/results/C"
 # solver mode: CPU or GPU

@@ -142,14 +142,17 @@ def convert(config):
         trainLabel = labels[config.trainRange, ...]
         mirroredTrainImages = mirroredImages[config.trainRange, ...]
 
-        testImages = images[config.testRange, ...]
-        testLabel = labels[config.testRange, ...]
-        mirroredTestImages = mirroredImages[config.testRange, ...]
-
         print("Start Convert Train Set.")
         pixelToDB(config.trainData, config.subImageSize, trainImages, mirroredTrainImages, trainLabel, config.debug)
-        print("Start Convert Test Set.")
-        pixelToDB(config.testData, config.subImageSize, testImages, mirroredTestImages, testLabel, config.debug)
+
+        if config.testImages is not None:
+            testLabels = convertLabels(loadImages(config.testLabels))[config.testRange]
+
+            testImages = loadImages(config.testImages)[config.testRange]
+            mirroredTestImages = mirrorEdges(config.subImageSize, testImages, config.debug)
+
+            print("Start Convert Test Set.")
+            pixelToDB(config.testData, config.subImageSize, testImages, mirroredTestImages, testLabels, config.debug)
 
 
 if __name__ == "__main__":

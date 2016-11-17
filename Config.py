@@ -28,7 +28,9 @@ class Config:
         self.testData = config["testData"]
         self.testImages = config["testImages"]
         self.testLabels = config["testLabels"]
-        self.testRange = eval(config["testRange"])
+
+        if config["testRange"] is not None:
+            self.testRange = eval(config["testRange"])
 
         self.deployImages = config["deployImages"]
         self.deployLabels = config["deployLabels"]

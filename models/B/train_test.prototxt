@@ -12,24 +12,7 @@ layer {
   }
   data_param {
     source: "data/train_65"
-    batch_size: 64
-    backend: LMDB
-  }
-}
-layer {
-  name: "label"
-  type: "Data"
-  top: "data"
-  top: "label"
-  include {
-    phase: TEST
-  }
-  transform_param {
-    scale: 0.00390625
-  }
-  data_param {
-    source: "data/test_65"
-    batch_size: 100
+    batch_size: 256
     backend: LMDB
   }
 }
@@ -55,6 +38,12 @@ layer {
       type: "constant"
     }
   }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
 }
 layer {
   name: "pool1"
@@ -91,6 +80,12 @@ layer {
   }
 }
 layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
   name: "pool2"
   type: "Pooling"
   bottom: "conv2"
@@ -125,6 +120,12 @@ layer {
   }
 }
 layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
   name: "conv4"
   type: "Convolution"
   bottom: "conv3"
@@ -146,6 +147,12 @@ layer {
       type: "constant"
     }
   }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
 }
 layer {
   name: "pool3"
@@ -198,16 +205,6 @@ layer {
     bias_filler {
       type: "constant"
     }
-  }
-}
-layer {
-  name: "accuracy"
-  type: "Accuracy"
-  bottom: "ip2"
-  bottom: "label"
-  top: "accuracy"
-  include {
-    phase: TEST
   }
 }
 layer {

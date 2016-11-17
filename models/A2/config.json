@@ -15,7 +15,7 @@
   "segmentRange" : "range(25,30)",
   "solver" : "models/A2/solver.prototxt",
   "modelPrototxt" : "models/A2/deploy.prototxt",
-  "trainedModel" : "models/A2/results/A2_iter_5242880.caffemodel.h5",
+  "trainedModel" : "models/A2/results/A2_iter_3932160.caffemodel.h5",
   "likelihood" : "models/A2/results/likelihood.npy",
   "segment" : "models/A2/results/segment.npy"
 }

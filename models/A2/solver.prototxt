@@ -12,7 +12,7 @@ gamma: 0.1
 
 display: 1024
 # The maximum number of iterations
-max_iter: 5242880
+max_iter: 3932160
 # snapshot intermediate results
 # snapshot: 100000
 snapshot_format: HDF5

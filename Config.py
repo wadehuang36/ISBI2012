@@ -18,8 +18,7 @@ class Config:
         self.trainData = config["trainData"]
         self.trainImages = config["trainImages"]
         self.trainLabels = config["trainLabels"]
-        if "trainRange" in config:
-            self.trainRange = eval(config["trainRange"])
+        self.trainRange = eval(config["trainRange"])
 
         if "trainBatch" in config:
             self.trainBatch = int(config["trainBatch"])
@@ -29,17 +28,19 @@ class Config:
         self.testData = config["testData"]
         self.testImages = config["testImages"]
         self.testLabels = config["testLabels"]
-        if "testRange" in config:
-            self.testRange = eval(config["testRange"])
+        self.testRange = eval(config["testRange"])
 
         self.deployImages = config["deployImages"]
-        if "deployRange" in config:
-            self.deployRange = eval(config["deployRange"])
+        self.deployLabels = config["deployLabels"]
+        self.deployRange = eval(config["deployRange"])
 
         if "deployBatch" in config:
             self.deployBatch = int(config["deployBatch"])
         else:
             self.deployBatch = 128
+
+        self.randomForestRange = eval(config["randomForestRange"])
+        self.segmentRange = eval(config["segmentRange"])
 
         self.solver = str(config["solver"])
         self.modelPrototxt = str(config["modelPrototxt"])

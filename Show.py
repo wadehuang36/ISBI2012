@@ -9,9 +9,11 @@ curr_pos = 0
 
 
 def show(config):
-    images1 = Convert.loadImages(config.trainImages)
-    images2 = Convert.loadImages(config.trainLabels)
-    images3 = np.load(config.likelihood)[:, :, :, 1]
+    images1 = Convert.loadImages(config.deployImages)[config.segmentRange]
+    images2 = Convert.loadImages(config.deployLabels)[config.segmentRange]
+
+    start = min(config.segmentRange) - min(config.deployRange)
+    images3 = np.load(config.likelihood)[start:, :, :, 1]
     images4 = Convert.loadMHA(glob.glob(config.getResultFile("final_*.mha")))
 
     def press(event):
@@ -46,7 +48,7 @@ def show(config):
         plt.imshow(images4[curr_pos])
         plt.axis('off')
 
-        fig.suptitle("Image " + str(curr_pos + 1))
+        fig.suptitle("Image " + str(config.segmentRange[curr_pos] + 1))
         fig.canvas.draw()
 
     fig = plt.figure(figsize=(12, 8))

@@ -115,7 +115,7 @@ class StdWrapper:
 def load(log=True):
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", dest="model")
-    parser.add_argument("--debug", dest="debug", default="0")
+    parser.add_argument("--debug", dest="debug", const=True, action='store_const', default=False)
     parser.add_argument("--nolog", dest="nolog", const=True, action='store_const', default=False)
     args, unknown = parser.parse_known_args()
 
@@ -138,10 +138,9 @@ def load(log=True):
     if args.nolog:
         log = False
 
-    debug = args.debug.lower() == "true" or args.debug == "1"
-    config = Config(modelFile, debug, log)
+    config = Config(modelFile, args.debug, log)
 
-    if debug:
+    if args.debug:
         if not os.path.exists("./debug"):
             os.mkdir("./debug")
 

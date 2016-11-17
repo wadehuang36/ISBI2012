@@ -69,7 +69,7 @@ def mirrorEdges(subImageSize, images, debug):
         copy[ni, -edgeSize:, :] = np.flipud(copy[ni, (-2 * edgeSize - 1):(-edgeSize - 1), :])
 
     if debug:
-        tifffile.imsave("./debug/mirrored.tif", copy)
+        tifffile.imsave("./debug/mirrored.tif", copy[0:10])
 
     return copy
 
@@ -103,7 +103,7 @@ def pixelToDB(dbFile, subImageSize, images, mirroredImages, labels, debug):
                 lmdb_txn.put(keystr, datum.SerializeToString())
 
                 if debug and i % 10000 == 0:
-                    tifffile.imsave("./debug/tile_%s.tif" % i, image[0, ...])
+                    tifffile.imsave("./debug/tile_%s.tif" % i, image[0])
 
         lmdb_txn.commit()
 
@@ -133,12 +133,12 @@ def convert(config):
     if os.path.exists(config.trainData):
         print("%s exists, skip converting" % config.trainData)
     else:
-        trainLabel = convertLabels(loadImages(config.trainLabels))[config.trainRange]
-        trainImages = loadImages(config.trainLabels)[config.trainRange]
+        trainLabels = convertLabels(loadImages(config.trainLabels))[config.trainRange]
+        trainImages = loadImages(config.trainImages)[config.trainRange]
         mirroredTrainImages = mirrorEdges(config.subImageSize, trainImages, config.debug)
 
         print("Start Convert Train Set.")
-        pixelToDB(config.trainData, config.subImageSize, trainImages, mirroredTrainImages, trainLabel, config.debug)
+        pixelToDB(config.trainData, config.subImageSize, trainImages, mirroredTrainImages, trainLabels, config.debug)
 
         if config.testImages is not None:
             testLabels = convertLabels(loadImages(config.testLabels))[config.testRange]

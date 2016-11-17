@@ -133,14 +133,9 @@ def convert(config):
     if os.path.exists(config.trainData):
         print("%s exists, skip converting" % config.trainData)
     else:
-        labels = convertLabels(loadImages(config.trainLabels))
-
-        images = loadImages(config.trainImages)
-        mirroredImages = mirrorEdges(config.subImageSize, images, config.debug)
-
-        trainImages = images[config.trainRange, ...]
-        trainLabel = labels[config.trainRange, ...]
-        mirroredTrainImages = mirroredImages[config.trainRange, ...]
+        trainLabel = convertLabels(loadImages(config.trainLabels))[config.trainRange]
+        trainImages = loadImages(config.trainLabels)[config.trainRange]
+        mirroredTrainImages = mirrorEdges(config.subImageSize, trainImages, config.debug)
 
         print("Start Convert Train Set.")
         pixelToDB(config.trainData, config.subImageSize, trainImages, mirroredTrainImages, trainLabel, config.debug)

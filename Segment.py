@@ -38,9 +38,9 @@ def segment(config):
         saliencyFiles.append(config.getResultFile("saliency_%03d.ssv" % j))
         initSegFiles.append(config.getResultFile("initseg_%03d.mha" % j))
         treeFiles.append(config.getResultFile("tree_%03d.ssv" % j))
+        bcfeatFiles.append(config.getResultFile("bcfeat_%03d.ssv" % j))
 
         if j in config.randomForestRange:
-            bcfeatFiles.append(config.getResultFile("bcfeat_%03d.ssv" % j))
             bclabelFiles.append(config.getResultFile("bclabel_%03d.ssv" % j))
 
         if j in config.segmentRange:
@@ -70,7 +70,7 @@ def segment(config):
                 ["hnsGenBoundaryLabels", initSegFiles[i], treeFiles[i], trustFiles[i], bclabelFiles[i]])
 
     print ("\tRunning Step 7 And 8")
-    x = readSSVs(bcfeatFiles)
+    x = readSSVs(bcfeatFiles[0:len(bclabelFiles)])
     y = readSSVs(bclabelFiles)
 
     y = y.reshape(y.size)

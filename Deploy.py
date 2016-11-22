@@ -5,8 +5,8 @@ import Convert
 
 
 def deploy(config):
+    caffe.set_mode_gpu()
     classifier = caffe.Classifier(config.modelPrototxt, config.trainedModel)
-
     images = Convert.loadImages(config.deployImages)
     if config.deployRange is not None:
         images = images[config.deployRange, ...]
@@ -37,4 +37,6 @@ def deploy(config):
 
 
 if __name__ == "__main__":
-    deploy(Config.load())
+    config = Config.load()
+    deploy(config)
+    config.showRunTime()

@@ -50,24 +50,24 @@ def segment(config):
             bcpredFiles.append(config.getResultFile("bcpred_%03d.ssv" % j))
             finalFiles.append(config.getResultFile("final_%03d.mha" % j))
 
-        # print ("\t\tRunning Step 2")
-        # subprocess.check_call(["hnsWatershed", pmFiles[i], "0.1", "0", "1", "1", initSegFiles[i]])
-        #
-        # print ("\t\tRunning Step 3")
-        # subprocess.check_call(["hnsMerge", initSegFiles[i], pmFiles[i], "50", "200", "0.5", "0", "1", initSegFiles[i]])
-        #
-        # print ("\t\tRunning Step 4")
-        # subprocess.check_call(["hnsGenMerges", initSegFiles[i], pmFiles[i], treeFiles[i], saliencyFiles[i]])
-        #
-        # print ("\t\tRunning Step 5")
-        # subprocess.check_call(
-        #     ["hnsGenBoundaryFeatures", initSegFiles[i], treeFiles[i], saliencyFiles[i], rawFiles[i], pmFiles[i],
-        #      "data/tdict.ssv", bcfeatFiles[i]])
-        #
-        # if j in config.randomForestRange:
-        #     print ("\t\tRunning Step 6")
-        #     subprocess.check_call(
-        #         ["hnsGenBoundaryLabels", initSegFiles[i], treeFiles[i], trustFiles[i], bclabelFiles[i]])
+        print ("\t\tRunning Step 2")
+        subprocess.check_call(["hnsWatershed", pmFiles[i], "0.1", "0", "1", "1", initSegFiles[i]])
+
+        print ("\t\tRunning Step 3")
+        subprocess.check_call(["hnsMerge", initSegFiles[i], pmFiles[i], "50", "200", "0.5", "0", "1", initSegFiles[i]])
+
+        print ("\t\tRunning Step 4")
+        subprocess.check_call(["hnsGenMerges", initSegFiles[i], pmFiles[i], treeFiles[i], saliencyFiles[i]])
+
+        print ("\t\tRunning Step 5")
+        subprocess.check_call(
+            ["hnsGenBoundaryFeatures", initSegFiles[i], treeFiles[i], saliencyFiles[i], rawFiles[i], pmFiles[i],
+             "data/tdict.ssv", bcfeatFiles[i]])
+
+        if j in config.randomForestRange:
+            print ("\t\tRunning Step 6")
+            subprocess.check_call(
+                ["hnsGenBoundaryLabels", initSegFiles[i], treeFiles[i], trustFiles[i], bclabelFiles[i]])
 
     print ("\tRunning Step 7 And 8")
     x = readSSVs(bcfeatFiles)

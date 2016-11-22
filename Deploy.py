@@ -19,7 +19,7 @@ def deploy(config):
 
     print("Start Deploying")
     for ni in range(n):
-        print("\tDeploying Image %s" % ni)
+        print("\tDeploying Image %s" % config.deployRange[ni])
         for hi in range(h):
             for wi in range(0, w, b):
                 batches = []

@@ -29,6 +29,12 @@ layer {
   }
 }
 layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
   name: "pool1"
   type: "Pooling"
   bottom: "conv1"
@@ -61,6 +67,12 @@ layer {
       type: "constant"
     }
   }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
 }
 layer {
   name: "pool2"
@@ -97,6 +109,12 @@ layer {
   }
 }
 layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
   name: "conv4"
   type: "Convolution"
   bottom: "conv3"
@@ -118,6 +136,12 @@ layer {
       type: "constant"
     }
   }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
 }
 layer {
   name: "pool3"

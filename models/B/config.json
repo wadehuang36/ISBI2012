@@ -10,12 +10,12 @@
   "testData" : null,
   "deployImages" : "data/train-volume.tif",
   "deployLabels" : "data/train-labels.tif",
-  "deployRange" : "range(15,20)",
-  "randomForestRange" : "range(15,18)",
-  "segmentRange" : "range(18,20)",
+  "deployRange" : "range(15,30)",
+  "randomForestRange" : "range(15,25)",
+  "segmentRange" : "range(25,30)",
   "solver" : "models/B/solver.prototxt",
   "modelPrototxt" : "models/B/deploy.prototxt",
-  "trainedModel" : "models/B/results/B_iter_4096.caffemodel.h5",
+  "trainedModel" : "models/B/results/B_iter_3932160.caffemodel.h5",
   "likelihood" : "models/B/results/likelihood.npy",
   "segment" : "models/B/results/segment.npy"
 }

@@ -13,12 +13,12 @@ stepsize: 1024
 gamma: 0.1
 weight_decay: 0.0005
 
-display: 4096
+display: 256
 # The maximum number of iterations
-max_iter: 3932160
-# max_iter: 4096
-snapshot: 262144
+# max_iter: 3932160
+max_iter: 4096
+snapshot: 1024
 snapshot_format: HDF5
-snapshot_prefix: "models/C/results/C"
+snapshot_prefix: "models/C2/results/C"
 # solver mode: CPU or GPU
 solver_mode: GPU

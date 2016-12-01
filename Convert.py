@@ -140,7 +140,10 @@ def convert(config):
         print("Start Convert Train Set.")
         pixelToDB(config.trainData, config.subImageSize, trainImages, mirroredTrainImages, trainLabels, config.debug)
 
-        if config.testImages is not None:
+    if config.testImages is not None:
+        if os.path.exists(config.testData):
+            print("%s exists, skip converting" % config.testData)
+        else:
             testLabels = convertLabels(loadImages(config.testLabels))[config.testRange]
 
             testImages = loadImages(config.testImages)[config.testRange]

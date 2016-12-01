@@ -4,12 +4,11 @@ net: "models/A/train_test.prototxt"
 test_iter: 64
 test_interval: 1024
 
-base_lr: 0.01
-
 lr_policy: "step"
-gamma: 0.1
-stepsize: 10000  # drop the learning rate every 10K iterations
+base_lr: 0.01
 momentum: 0.9
+stepsize: 1000000
+gamma: 0.1
 weight_decay: 0.0005
 
 display: 1024

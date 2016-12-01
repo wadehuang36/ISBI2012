@@ -9,7 +9,7 @@ test_interval: 1024
 lr_policy: "step"
 base_lr: 0.01
 momentum: 0.9
-stepsize: 1024
+stepsize: 1000000
 gamma: 0.1
 weight_decay: 0.0005
 

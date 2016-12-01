@@ -8,6 +8,37 @@ import subprocess, glob
 import numpy as np
 import Config
 import sklearn.ensemble as ske
+from multiprocessing import Pool
+
+
+def subfunction(args):
+    config = args[0]
+    i = args[1]
+
+    rawFile = "data/raw/raw_%03d.mha" % i
+    trustFile = "data/truth/truth_%03d.png" % i
+    pmFile = config.getResultFile("pm_%03d.mha" % i)
+    initFile = config.getResultFile("initseg_%03d.mha" % i)
+    treeFile = config.getResultFile("tree_%03d.ssv" % i)
+    saliencyFile = config.getResultFile("saliency_%03d.ssv" % i)
+    bcfeatFile = config.getResultFile("bcfeat_%03d.ssv" % i)
+    bclabelFile = config.getResultFile("bclabel_%03d.ssv" % i)
+
+    print ("\t\tRunning Image %s Step 2" % i)
+    subprocess.check_call(["hnsWatershed", pmFile, "0.1", "0", "1", "1", initFile])
+
+    print ("\t\tRunning Image %s Step 3" % i)
+    subprocess.check_call(["hnsMerge", initFile, pmFile, "50", "200", "0.5", "0", "1", initFile])
+
+    print ("\t\tRunning Image %s Step 4" % i)
+    subprocess.check_call(["hnsGenMerges", initFile, pmFile, treeFile, saliencyFile])
+
+    print ("\t\tRunning Image %s Step 5" % i)
+    subprocess.check_call(["hnsGenBoundaryFeatures", initFile, treeFile, saliencyFile, rawFile, pmFile, "data/tdict.ssv", bcfeatFile])
+
+    if i in config.randomForestRange:
+        print ("\t\tRunning Image %s Step 6" % i)
+        subprocess.check_call(["hnsGenBoundaryLabels", initFile, treeFile, trustFile, bclabelFile])
 
 
 def segment(config):
@@ -15,63 +46,12 @@ def segment(config):
 
     convertLikelihoodNpyToMha(config)
 
-    pmFiles = glob.glob(config.getResultFile("pm_*.mha"))
-    pmFiles.sort()
-    rawFiles = []
-    trustFiles = []
-    initSegFiles = []
-    treeFiles = []
-    saliencyFiles = []
-    bclabelFiles = []
-    bcfeatFiles = []
-
-    tree2Files = []
-    initSeg2Files = []
-    bcfeat2Files = []
-    bcpredFiles = []
-    finalFiles = []
-
-    for i, j in enumerate(config.deployRange):
-        print ("\tRunning Image %s" % j)
-        rawFiles.append("data/raw/raw_%03d.mha" % j)
-        trustFiles.append("data/truth/truth_%03d.png" % j)
-        saliencyFiles.append(config.getResultFile("saliency_%03d.ssv" % j))
-        initSegFiles.append(config.getResultFile("initseg_%03d.mha" % j))
-        treeFiles.append(config.getResultFile("tree_%03d.ssv" % j))
-        bcfeatFiles.append(config.getResultFile("bcfeat_%03d.ssv" % j))
-
-        if j in config.randomForestRange:
-            bclabelFiles.append(config.getResultFile("bclabel_%03d.ssv" % j))
-
-        if j in config.segmentRange:
-            tree2Files.append(config.getResultFile("tree_%03d.ssv" % j))
-            initSeg2Files.append(config.getResultFile("initseg_%03d.mha" % j))
-            bcfeat2Files.append(config.getResultFile("bcfeat_%03d.ssv" % j))
-            bcpredFiles.append(config.getResultFile("bcpred_%03d.ssv" % j))
-            finalFiles.append(config.getResultFile("final_%03d.mha" % j))
-
-        print ("\t\tRunning Step 2")
-        subprocess.check_call(["hnsWatershed", pmFiles[i], "0.1", "0", "1", "1", initSegFiles[i]])
-
-        print ("\t\tRunning Step 3")
-        subprocess.check_call(["hnsMerge", initSegFiles[i], pmFiles[i], "50", "200", "0.5", "0", "1", initSegFiles[i]])
-
-        print ("\t\tRunning Step 4")
-        subprocess.check_call(["hnsGenMerges", initSegFiles[i], pmFiles[i], treeFiles[i], saliencyFiles[i]])
-
-        print ("\t\tRunning Step 5")
-        subprocess.check_call(
-            ["hnsGenBoundaryFeatures", initSegFiles[i], treeFiles[i], saliencyFiles[i], rawFiles[i], pmFiles[i],
-             "data/tdict.ssv", bcfeatFiles[i]])
-
-        if j in config.randomForestRange:
-            print ("\t\tRunning Step 6")
-            subprocess.check_call(
-                ["hnsGenBoundaryLabels", initSegFiles[i], treeFiles[i], trustFiles[i], bclabelFiles[i]])
+    p = Pool()
+    p.map(subfunction, [(config, i) for i in config.deployRange])
 
     print ("\tRunning Step 7 And 8")
-    x = readSSVs(bcfeatFiles[0:len(bclabelFiles)])
-    y = readSSVs(bclabelFiles)
+    x = readSSVs([config.getResultFile("bcfeat_%03d.ssv" % i) for i in config.randomForestRange])
+    y = readSSVs([config.getResultFile("bclabel_%03d.ssv" % i) for i in config.randomForestRange])
 
     y = y.reshape(y.size)
     y = y - y.min()
@@ -81,15 +61,21 @@ def segment(config):
     rfc.fit(x, y)
 
     print ("\tRunning Step 9")
-    for i, j in enumerate(config.segmentRange):
-        x = readSSVs(bcfeat2Files[i:i + 1])  # it needs to be array, so uses []
+    for i in config.segmentRange:
+        x = readSSVs([config.getResultFile("bcfeat_%03d.ssv" % i)])  # it needs to be array, so uses []
         x_hat = rfc.apply(x).astype("float32")
         x_hat = x_hat / x_hat.max()
-        writeSSV(x_hat, bcpredFiles[i])
+        writeSSV(x_hat, config.getResultFile("bcpred_%03d.ssv" % i))
 
-        print ("\t\tFinish Segment %s" % j)
+        print ("\t\tFinish Segment %s" % i)
         subprocess.check_call(
-            ["hnsSegment", initSeg2Files[i], tree2Files[i], bcpredFiles[i], "1", "0", finalFiles[i]])
+            ["hnsSegment",
+             config.getResultFile("initseg_%03d.ssv" % i),
+             config.getResultFile("tree_%03d.ssv" % i),
+             config.getResultFile("bcpred_%03d.ssv" % i),
+             "1",
+             "0",
+             config.getResultFile("final_%03d.ssv" % i)])
 
 
 def convertLikelihoodNpyToMha(config):

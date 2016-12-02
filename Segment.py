@@ -70,12 +70,12 @@ def segment(config):
         print ("\t\tFinish Segment %s" % i)
         subprocess.check_call(
             ["hnsSegment",
-             config.getResultFile("initseg_%03d.ssv" % i),
+             config.getResultFile("initseg_%03d.mha" % i),
              config.getResultFile("tree_%03d.ssv" % i),
              config.getResultFile("bcpred_%03d.ssv" % i),
              "1",
              "0",
-             config.getResultFile("final_%03d.ssv" % i)])
+             config.getResultFile("final_%03d.mha" % i)])
 
 
 def convertLikelihoodNpyToMha(config):

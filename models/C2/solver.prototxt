@@ -3,20 +3,20 @@ net: "models/C/train_test.prototxt"
 
 # test_iter specifies how many forward passes the test should carry out.
 test_iter: 64
-test_interval: 1024
+test_interval: 4096
 
 # The base learning rate, momentum and the weight decay of the network.
 lr_policy: "step"
 base_lr: 0.01
 momentum: 0.9
-stepsize: 1024
+stepsize: 300000
 gamma: 0.1
 weight_decay: 0.0005
 
-display: 256
+display: 4096
 # The maximum number of iterations
 # max_iter: 3932160
-max_iter: 4096
+max_iter: 1000000
 snapshot: 1024
 snapshot_format: HDF5
 snapshot_prefix: "models/C2/results/C"

@@ -9,12 +9,14 @@ import time
 
 
 class Config:
-    def __init__(self, modelFile, debug, log=True):
+    def __init__(self, modelFile, args):
         config = json.load(open(modelFile))
-        self.modelPath = os.path.dirname(modelFile)
-        self.debug = debug
-        self.subImageSize = int(config["subImageSize"])
 
+        self.gpu = args.gpu
+        self.debug = args.debug
+
+        self.modelPath = os.path.dirname(modelFile)
+        self.subImageSize = int(config["subImageSize"])
         self.trainData = config["trainData"]
         self.trainImages = config["trainImages"]
         self.trainLabels = config["trainLabels"]
@@ -58,7 +60,7 @@ class Config:
             os.mkdir(self.resultsPath)
 
         # make out to file and console
-        if log:
+        if args.log:
             logFile = os.path.join(self.resultsPath, datetime.datetime.now().strftime("%Y-%m-%dT%H-%M.log"))
             fh = logging.FileHandler(logFile)
             fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
@@ -115,9 +117,10 @@ class StdWrapper:
 def load(log=True):
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", dest="model")
+    parser.add_argument("--gpu", dest="gpu", default=None)
     parser.add_argument("--debug", dest="debug", const=True, action='store_const', default=False)
     parser.add_argument("--nolog", dest="nolog", const=True, action='store_const', default=False)
-    args, unknown = parser.parse_known_args()
+    args, unknownArgs = parser.parse_known_args()
 
     if args.model is None:
         print ("Place choose a model file")
@@ -135,10 +138,8 @@ def load(log=True):
     else:
         modelFile = "models/%s/config.json" % args.model
 
-    if args.nolog:
-        log = False
-
-    config = Config(modelFile, args.debug, log)
+    args.log = log and not args.nolog
+    config = Config(modelFile, args)
 
     if args.debug:
         if not os.path.exists("./debug"):

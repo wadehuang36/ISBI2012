@@ -5,9 +5,14 @@ import Config
 
 def train(config):
     print ("Start train with " + config.solver)
-    p = subprocess.Popen(["caffe", "train", "--solver=" + config.solver],
-                         stdout=config.logStream,
-                         stderr=config.logStream)
+    args = ["caffe", "train", "--solver=" + config.solver]
+    if config.gpu is None:
+        args.append("--gpu=all")
+    else:
+        args.append("--gpu=" + config.gpu)
+
+    p = subprocess.Popen(args, stdout=config.logStream, stderr=config.logStream)
+
     p.wait()
     config.logStream.flush()
 

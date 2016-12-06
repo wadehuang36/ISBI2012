@@ -6,6 +6,9 @@ import Convert
 
 def deploy(config):
     caffe.set_mode_gpu()
+    if config.gpu is not None:
+        caffe.set_device(int(config.gpu))
+
     classifier = caffe.Classifier(config.modelPrototxt, config.trainedModel)
     images = Convert.loadImages(config.deployImages)
     if config.deployRange is not None:

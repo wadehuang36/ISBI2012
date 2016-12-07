@@ -13,9 +13,9 @@
   "deployRange" : "range(15,17)",
   "randomForestRange" : "range(15,16)",
   "segmentRange" : "range(16,17)",
-  "solver" : "models/C3/solver.prototxt",
-  "modelPrototxt" : "models/C/deploy.prototxt",
-  "trainedModel" : "models/C3/results/C_iter_1024.caffemodel.h5",
-  "likelihood" : "models/C3/results/likelihood.npy",
-  "segment" : "models/C3/results/segment.npy"
+  "solver" : "models/C4/solver.prototxt",
+  "modelPrototxt" : "models/C4/deploy.prototxt",
+  "trainedModel" : "models/C4/results/C_iter_1024.caffemodel.h5",
+  "likelihood" : "models/C4/results/likelihood.npy",
+  "segment" : "models/C4/results/segment.npy"
 }

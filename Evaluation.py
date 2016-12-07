@@ -20,7 +20,7 @@ def evaluation_likelihood(config):
     arr = arr.astype(np.uint8)
 
     likelihood = config.getResultFile("likelihood.tif")
-    tifffile.imsave(likelihood, arr[:, :, :, 1])
+    tifffile.imsave(likelihood, arr[:, np.newaxis, :, :, 1])
 
     p = subprocess.Popen(["java", "-jar", "Evaluation.jar", target, likelihood],
                          stdout=config.logStream,

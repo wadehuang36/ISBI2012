@@ -1,0 +1,21 @@
+{
+  "subImageSize" : 35,
+  "trainImages" : "/home/wade/Projects/ISBI2012/models/S/results/train-input.tif",
+  "trainLabels" : "/home/wade/Projects/ISBI2012/models/S/results/train-labels.tif",
+  "trainRange" : "range(0,15)",
+  "trainData" : "data/train_35",
+  "testImages" : "data/train-volume.tif",
+  "testLabels" : "data/train-labels.tif",
+  "testRange" : "range(15,20)",
+  "testData" : "data/test_35",
+  "deployImages" : "data/train-volume.tif",
+  "deployLabels" : "data/train-labels.tif",
+  "deployRange" : "range(15,30)",
+  "randomForestRange" : "range(15,25)",
+  "segmentRange" : "range(25,30)",
+  "solver" : "models/A/solver.prototxt",
+  "modelPrototxt" : "models/A/deploy.prototxt",
+  "trainedModel" : "models/A/results/A_iter_3932160.caffemodel.h5",
+  "likelihood" : "/home/wade/Projects/ISBI2012/models/S/results/train-membranes-idsia.tif",
+  "segment" : "models/A/results/segment.npy"
+}

@@ -47,7 +47,7 @@ def segment(config):
     convertLikelihoodNpyToMha(config)
 
     p = Pool()
-    p.map(parallelFunction, [(config, i) for i in config.deployRange])
+    p.map(parallelFunction, ((config, i) for i in config.deployRange))
 
     print ("\tRunning Step 7 And 8")
     x = readSSVs([config.getResultFile("bcfeat_%03d.ssv" % i) for i in config.randomForestRange])

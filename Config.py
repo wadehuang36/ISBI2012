@@ -119,7 +119,11 @@ class StdWrapper:
         pass
 
 
+instance = None
+
+
 def load(log=True):
+    global instance
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", dest="model")
     parser.add_argument("--trainedModel", dest="trainedModel", default=None)
@@ -145,7 +149,7 @@ def load(log=True):
         modelFile = "models/%s/config.json" % args.model
 
     args.log = log and not args.nolog
-    config = Config(modelFile, args)
+    instance = config = Config(modelFile, args)
 
     if args.debug:
         if not os.path.exists("./debug"):

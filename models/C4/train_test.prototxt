@@ -12,7 +12,7 @@ layer {
   }
   data_param {
     source: "data/train_95"
-    batch_size: 64
+    batch_size: 128
     backend: LMDB
   }
 }
@@ -180,6 +180,15 @@ layer {
     bias_filler {
       type: "constant"
     }
+  }
+}
+layer {
+  name: "drop1"
+  type: "Dropout"
+  bottom: "ip1"
+  top: "drop1"
+  dropout_param {
+    dropout_ratio: 0.5
   }
 }
 layer {

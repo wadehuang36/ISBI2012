@@ -194,7 +194,7 @@ layer {
 layer {
   name: "ip2"
   type: "InnerProduct"
-  bottom: "ip1"
+  bottom: "drop1"
   top: "ip2"
   param {
     lr_mult: 1

@@ -48,7 +48,12 @@ class Config:
 
         self.solver = str(config["solver"])
         self.modelPrototxt = str(config["modelPrototxt"])
-        self.trainedModel = str(config["trainedModel"])
+
+        if args.trainedModel is None:
+            self.trainedModel = str(config["trainedModel"])
+        else:
+            self.trainedModel = str(args.trainedModel)
+
         self.likelihood = config["likelihood"]
         self.segment = config["segment"]
 
@@ -117,6 +122,7 @@ class StdWrapper:
 def load(log=True):
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", dest="model")
+    parser.add_argument("--trainedModel", dest="trainedModel", default=None)
     parser.add_argument("--gpu", dest="gpu", default=None)
     parser.add_argument("--debug", dest="debug", const=True, action='store_const', default=False)
     parser.add_argument("--nolog", dest="nolog", const=True, action='store_const', default=False)

@@ -14,6 +14,11 @@ class Config:
 
         self.gpu = args.gpu
         self.debug = args.debug
+        self.no_convert = args.no_convert
+        self.no_train = args.no_train
+        self.no_deploy = args.no_deploy
+        self.no_segment = args.no_segment
+        self.no_eval = args.no_eval
 
         self.modelPath = os.path.dirname(modelFile)
         self.subImageSize = int(config["subImageSize"])
@@ -128,6 +133,11 @@ def load(log=True):
     parser.add_argument("--model", dest="model")
     parser.add_argument("--trainedModel", dest="trainedModel", default=None)
     parser.add_argument("--gpu", dest="gpu", default=None)
+    parser.add_argument("--nc", dest="no_convert", const=True, action='store_const', default=False)
+    parser.add_argument("--nt", dest="no_train", const=True, action='store_const', default=False)
+    parser.add_argument("--nd", dest="no_deploy", const=True, action='store_const', default=False)
+    parser.add_argument("--ns", dest="no_segment", const=True, action='store_const', default=False)
+    parser.add_argument("--ne", dest="no_eval", const=True, action='store_const', default=False)
     parser.add_argument("--debug", dest="debug", const=True, action='store_const', default=False)
     parser.add_argument("--nolog", dest="nolog", const=True, action='store_const', default=False)
     args, unknownArgs = parser.parse_known_args()

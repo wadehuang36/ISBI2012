@@ -8,14 +8,23 @@ import Evaluation
 if __name__ == "__main__":
     config = Config.load()
 
-    Convert.convert(config)
+    if not config.no_convert:
+        Convert.convert(config)
+        config.showRunTime()
 
-    Train.train(config)
-    config.showRunTime()
+    if not config.no_train:
+        Train.train(config)
+        config.showRunTime()
 
-    Deploy.deploy(config)
-    config.showRunTime()
+    if not config.no_deploy:
+        Deploy.deploy(config)
+        config.showRunTime()
 
-    Segment.segment(config)
-    Evaluation.evaluation(config)
+    if not config.no_segment:
+        Segment.segment(config)
+        config.showRunTime()
+
+    if not config.no_eval:
+        Evaluation.evaluation(config)
+
     config.showRunTime()

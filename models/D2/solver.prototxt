@@ -1,0 +1,24 @@
+# The train/test net protocol buffer definition
+net: "models/D/train_test.prototxt"
+
+# test_iter specifies how many forward passes the test should carry out.
+test_iter: 64
+test_interval: 4096
+
+# The base learning rate, momentum and the weight decay of the network.
+lr_policy: "step"
+base_lr: 0.01
+momentum: 0.9
+stepsize: 1000000
+gamma: 0.1
+weight_decay: 0.0005
+
+display: 8
+# The maximum number of iterations
+#max_iter: 3932160
+max_iter: 262144
+#snapshot: 128
+snapshot_format: HDF5
+snapshot_prefix: "models/D2/results/D"
+# solver mode: CPU or GPU
+solver_mode: GPU

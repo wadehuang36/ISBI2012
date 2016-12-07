@@ -1,0 +1,21 @@
+{
+  "subImageSize" : 95,
+  "trainImages" : "data/train-volume.tif",
+  "trainLabels" : "data/train-labels.tif",
+  "trainRange" : "range(0,15)",
+  "trainData" : "data/train_95",
+  "testImages" : "data/train-volume.tif",
+  "testLabels" : "data/train-labels.tif",
+  "testRange" : "range(15,20)",
+  "testData" : "data/test_95",
+  "deployImages" : "data/train-volume.tif",
+  "deployLabels" : "data/train-labels.tif",
+  "deployRange" : "range(15,20)",
+  "randomForestRange" : "range(15,18)",
+  "segmentRange" : "range(18,20)",
+  "solver" : "models/D/solver.prototxt",
+  "modelPrototxt" : "models/D/deploy.prototxt",
+  "trainedModel" : "models/D2/results/D_iter_262144.caffemodel.h5",
+  "likelihood" : "models/D2/results/likelihood.npy",
+  "segment" : "models/D2/results/segment.npy"
+}

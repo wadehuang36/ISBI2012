@@ -4,14 +4,14 @@ This segmentation has two parts mainly,
  1. Random Forest Training, the applying images are settled on config.randomForestRange
  2. Final Segment, the applying images are settled on config.segmentRange
 """
-import subprocess, glob
+import subprocess
 import numpy as np
 import Config
 import sklearn.ensemble as ske
 from multiprocessing import Pool
 
 
-def subfunction(args):
+def parallelFunction(args):
     config = args[0]
     i = args[1]
 
@@ -47,7 +47,7 @@ def segment(config):
     convertLikelihoodNpyToMha(config)
 
     p = Pool()
-    p.map(subfunction, [(config, i) for i in config.deployRange])
+    p.map(parallelFunction, [(config, i) for i in config.deployRange])
 
     print ("\tRunning Step 7 And 8")
     x = readSSVs([config.getResultFile("bcfeat_%03d.ssv" % i) for i in config.randomForestRange])

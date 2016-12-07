@@ -69,9 +69,8 @@ def train():
 curr_pos = 0
 
 
-def show_likelihood():
-    arr = np.load("models/1/likelihood.npy")
-    images = arr.reshape(1, 512, 512, 2)
+def show_likelihood(file):
+    images = np.load(file)
 
     def handle_back(self, *args, **kwargs):
         global curr_pos
@@ -185,8 +184,8 @@ def arrayToTif():
 
 if __name__ == "__main__":
     # test()
-    train()
-    # show_likelihood()
+    # train()
+    show_likelihood("models/C2/results/likelihood.npy")
     # show_segment()
     # to_mha()
     # show_mha("/home/wade/Projects/SegmentationCode/EMSegLiu/jnm14/n3/r20.mha")

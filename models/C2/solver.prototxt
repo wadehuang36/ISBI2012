@@ -16,8 +16,8 @@ weight_decay: 0.0005
 display: 4096
 # The maximum number of iterations
 # max_iter: 3932160
-max_iter: 1000000
-snapshot: 100000
+max_iter: 100000
+snapshot: 10000
 snapshot_format: HDF5
 snapshot_prefix: "models/C2/results/C"
 # solver mode: CPU or GPU

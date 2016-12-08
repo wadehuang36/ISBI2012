@@ -155,18 +155,9 @@ layer {
   }
 }
 layer {
-  name: "drop1"
-  type: "Dropout"
-  bottom: "ip1"
-  top: "drop1"
-  dropout_param {
-    dropout_ratio: 0.5
-  }
-}
-layer {
   name: "ip2"
   type: "InnerProduct"
-  bottom: "drop1"
+  bottom: "ip1"
   top: "ip2"
   param {
     lr_mult: 1

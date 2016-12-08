@@ -13,34 +13,41 @@ from multiprocessing import Pool
 
 
 def parallelFunction(args):
-    i = args[0]
-    resultsPath = args[1]
-    doStep6 = args[2]
+    try:
+        i = args[0]
+        resultsPath = args[1]
+        doStep6 = args[2]
 
-    rawFile = "data/raw/raw_%03d.mha" % i
-    trustFile = "data/truth/truth_%03d.png" % i
-    pmFile = os.path.join(resultsPath, ("pm_%03d.mha" % i))
-    initFile = os.path.join(resultsPath, ("initseg_%03d.mha" % i))
-    treeFile = os.path.join(resultsPath, ("tree_%03d.ssv" % i))
-    saliencyFile = os.path.join(resultsPath, ("saliency_%03d.ssv" % i))
-    bcfeatFile = os.path.join(resultsPath, ("bcfeat_%03d.ssv" % i))
-    bclabelFile = os.path.join(resultsPath, ("bclabel_%03d.ssv" % i))
+        rawFile = "data/raw/raw_%03d.mha" % i
+        trustFile = "data/truth/truth_%03d.png" % i
+        pmFile = os.path.join(resultsPath, ("pm_%03d.mha" % i))
+        initFile = os.path.join(resultsPath, ("initseg_%03d.mha" % i))
+        treeFile = os.path.join(resultsPath, ("tree_%03d.ssv" % i))
+        saliencyFile = os.path.join(resultsPath, ("saliency_%03d.ssv" % i))
+        bcfeatFile = os.path.join(resultsPath, ("bcfeat_%03d.ssv" % i))
+        bclabelFile = os.path.join(resultsPath, ("bclabel_%03d.ssv" % i))
 
-    print ("\t\tRunning Image %s Step 2" % i)
-    subprocess.check_call(["hnsWatershed", pmFile, "0.1", "0", "1", "1", initFile])
+        print ("\t\tRunning Image %s Step 2" % i)
+        subprocess.check_call(["hnsWatershed", pmFile, "0.1", "0", "1", "1", initFile])
 
-    print ("\t\tRunning Image %s Step 3" % i)
-    subprocess.check_call(["hnsMerge", initFile, pmFile, "50", "200", "0.5", "0", "1", initFile])
+        print ("\t\tRunning Image %s Step 3" % i)
+        subprocess.check_call(["hnsMerge", initFile, pmFile, "50", "200", "0.5", "0", "1", initFile])
 
-    print ("\t\tRunning Image %s Step 4" % i)
-    subprocess.check_call(["hnsGenMerges", initFile, pmFile, treeFile, saliencyFile])
+        print ("\t\tRunning Image %s Step 4" % i)
+        subprocess.check_call(["hnsGenMerges", initFile, pmFile, treeFile, saliencyFile])
 
-    print ("\t\tRunning Image %s Step 5" % i)
-    subprocess.check_call(["hnsGenBoundaryFeatures", initFile, treeFile, saliencyFile, rawFile, pmFile, "data/tdict.ssv", bcfeatFile])
+        print ("\t\tRunning Image %s Step 5" % i)
+        subprocess.check_call(
+            ["hnsGenBoundaryFeatures", initFile, treeFile, saliencyFile, rawFile, pmFile, "data/tdict.ssv", bcfeatFile])
 
-    if doStep6:
-        print ("\t\tRunning Image %s Step 6" % i)
-        subprocess.check_call(["hnsGenBoundaryLabels", initFile, treeFile, trustFile, bclabelFile])
+        if doStep6:
+            print ("\t\tRunning Image %s Step 6" % i)
+            subprocess.check_call(["hnsGenBoundaryLabels", initFile, treeFile, trustFile, bclabelFile])
+
+        return True
+    except Exception, e:
+        print e
+        return False
 
 
 def segment(config):
@@ -49,7 +56,12 @@ def segment(config):
 
     # Can't pass Config object, so pass every thing needs
     p = Pool()
-    p.map(parallelFunction, [(i, config.resultsPath, i in config.randomForestRange) for i in config.deployRange])
+    results = p.map(parallelFunction,
+                    [(i, config.resultsPath, i in config.randomForestRange) for i in config.deployRange])
+
+    if len(filter(lambda x: x == False, results)) > 0:
+        print "Segment Fails"
+        return
 
     print ("\tRunning Step 7 And 8")
     x = readSSVs([config.getResultFile("bcfeat_%03d.ssv" % i) for i in config.randomForestRange])

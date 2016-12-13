@@ -1,4 +1,5 @@
 {
+  "description": "C4 is used testing some thing",
   "subImageSize" : 95,
   "trainImages" : "data/train-volume.tif",
   "trainLabels" : "data/train-labels.tif",

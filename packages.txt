@@ -3,3 +3,4 @@ numpy
 tifffile
 sklearn
 matplotlib
+lmdb
